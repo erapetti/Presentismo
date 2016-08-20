@@ -1,0 +1,28 @@
+<div id="content">
+
+<div id="presentismo">
+
+<div class="panel panel-default">
+  <div class="panel-heading">Personal del liceo que debería cobrar presentismo:</div>
+
+  <div class="panel-body">
+	<table class="table">
+	<% presentismos.forEach (function(info) { %>
+		<% if (info.tipo != 1 && info.activo=="S") { %>
+		<tr>
+			<td><% if(info.tipo == 1) { "ND" } else if (info.tipo == 2) { "DI" } else { "DD" } %></td>
+			<td><%= info.cedula %></td>
+			<td><%= info.PerNombreCompleto %></td>
+			<td><%= info.cargo %></td>
+			<td><%= info.horas %></td>
+			<td><% if(arrInasistencias[ info.cedula ]) { %>FALTAS<% } else { %>SIN FALTAS<% } %></td>
+		</tr>
+		<% } %>
+	<% }); %>
+	</table>
+  </div>
+</div>
+
+</div>
+
+</div>
