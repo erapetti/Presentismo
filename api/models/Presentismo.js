@@ -40,6 +40,9 @@ module.exports = {
 		DependDesc: 'string',
 		horas: 'integer',
 		activo: 'string',
+		TipoCargo: function() {
+			return (this.tipo==1 ? 'ND' : (this.tipo==2 ? 'DI' : 'DD'));
+		},
 	}
 
 };

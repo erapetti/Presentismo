@@ -1,1 +1,10 @@
-div#content { margin: 1em; }
+div#heading { padding:2em;margin:1em 0;background-color:transparent;overflow:hidden }
+div#heading h1::before { background-image:url(/images/background.jpg);background-size:cover;content:"";position:absolute;left:0;top:0;z-index:-1;opacity:0.3;width:100%;height:100%;display:block }
+div#heading h1, div#heading p { background-color:rgba(255,255,255,0.5) }
+div#content { margin:1em }
+div#presentismo .panel-default > .panel-heading { background:linear-gradient(to bottom,rgb(51,122,183) 0px,rgb(28,66,99) 100%); color:#fff }
+div#presentismo .panel-default { border-color:rgb(51,122,183) }
+div#presentismo .nav-pills > li > a { border:1px solid rgb(51,122,183);margin:5px }
+div#presentismo div#indice { padding:2em 0;font-size:120% }
+div#presentismo div#indice h2 { background-color:rgba(255,255,255,0.5) }
+div#presentismo div#indice ul { background-color:rgba(255,255,255,0.5) }
