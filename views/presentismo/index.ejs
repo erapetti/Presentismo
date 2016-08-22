@@ -11,14 +11,28 @@
   <div class="panel-heading">Mes:</div>
 
   <div class="panel-body">
+    <div class="col-xs-4">
 	<ul class="nav nav-pills nav-justified">
-	  <li role="presentation"<% if (infoMeses.mes1.class) { %> class="<%= infoMeses.mes1.class %>"<% } %>><a href="<% if (infoMeses.mes1.class) {%>#<% } else { %>?mes=1<% } %>"><%= infoMeses.mes1.nombre %></a></li>
-	  <li role="presentation"<% if (infoMeses.mes2.class) { %> class="<%= infoMeses.mes2.class %>"<% } %>><a href="<% if (infoMeses.mes2.class) {%>#<% } else { %>?mes=2<% } %>"><%= infoMeses.mes2.nombre %></a></li>
-	  <li role="presentation"<% if (infoMeses.mes3.class) { %> class="<%= infoMeses.mes3.class %>"<% } %>><a href="<% if (infoMeses.mes3.class) {%>#<% } else { %>?mes=3<% } %>"><%= infoMeses.mes3.nombre %></a></li>
+	  <li role="presentation"<% if (infoMeses.mes1.class) { %> class="<%= infoMeses.mes1.class %>"<% } %>><a<% if (!infoMeses.mes1.class) { %> href="?mes=1"<% } %>><%= infoMeses.mes1.nombre %></a></li>
 	</ul>
+	<p class="center"><% if (infoMeses.mes1.inhabilitado) {%>Aún no está habilitado<%} else { if (infoMeses.mes1.vencido) {%>Vencido<%} else {%>Vencimiento<%}%>: <%= infoMeses.mes1.vencimiento.toLocaleDateString() %><%}%></p>
+    </div>
+    <div class="col-xs-4">
+	<ul class="nav nav-pills nav-justified">
+	  <li role="presentation"<% if (infoMeses.mes2.class) { %> class="<%= infoMeses.mes2.class %>"<% } %>><a<% if (!infoMeses.mes2.class) { %> href="?mes=2"<% } %>><%= infoMeses.mes2.nombre %></a></li>
+	</ul>
+	<p class="center"><% if (infoMeses.mes2.inhabilitado) {%>Aún no está habilitado<%} else { if (infoMeses.mes2.vencido) {%>Vencido<%} else {%>Vencimiento<%}%>: <%= infoMeses.mes2.vencimiento.toLocaleDateString() %><%}%></p>
+    </div>
+    <div class="col-xs-4">
+	<ul class="nav nav-pills nav-justified">
+	  <li role="presentation"<% if (infoMeses.mes3.class) { %> class="<%= infoMeses.mes3.class %>"<% } %>><a<% if (!infoMeses.mes3.class) { %> href="?mes=3"<% } %>><%= infoMeses.mes3.nombre %></a></li>
+	</ul>
+	<p class="center"><% if (infoMeses.mes3.inhabilitado) {%>Aún no está habilitado<%} else { if (infoMeses.mes3.vencido) {%>Vencido<%} else {%>Vencimiento<%}%>: <%= infoMeses.mes3.vencimiento.toLocaleDateString() %><%}%></p>
+    </div>
   </div>
 </div>
 
+<% if (infoMeses.mes.id) { -%>
 <div id="indice">
 <h2>Contenido:</h2>
 <ul>
@@ -29,99 +43,8 @@
 </ul>
 </div>
 
-<a id="cobran" name="cobran"></a>
-<div class="panel panel-default">
-  <div class="panel-heading">Docentes del liceo que deberían cobrar presentismo:</div>
-
-  <% hayDocentes=0 %>
-  <div class="panel-body">
-	<table class="table">
-	<% personalLiceo.forEach (function(info) { -%>
-		<% if (info.tipo != 1 && info.activo=="S" && (!arrInasistencias[ info.cedula ] || !arrInasistencias[ info.cedula ][ info.TipoCargo() ] || arrInasistencias[ info.cedula ][ info.TipoCargo() ]<2)) {
-		   hayDocentes=1 %>
-		<tr>
-			<td><%= info.cedula %></td>
-			<td><%= info.PerNombreCompleto %></td>
-			<td><%= info.horas %> horas</td>
-			<td><%= info.cargo %></td>
-			<td><% if(arrInasistencias[ info.cedula ] && arrInasistencias[ info.cedula ][ info.TipoCargo() ]) { %>
-			  <%= arrInasistencias[ info.cedula ][ info.TipoCargo() ] %> FALTA
-			<% } else { %>
-			  SIN FALTAS
-			<% } %></td>
-		</tr>
-		<% }
-	   });
-	   if (!hayDocentes) { %>
-		<tr><td>No hay docentes que cumplan este criterio</td></tr>
-	<% } %>
-	</table>
-	<% if (hayDocentes) { %>
-		<a id="form" name="form"></a>
-		<form><input type="hidden" name="mes" value="<%= infoMeses.mes.id %>"><button type="submit" name="aprobar" value="on" class="btn btn-primary">Cerrar el mes de <%= infoMeses.mes.nombre %></button></form>
-	<% } %>
-  </div>
-</div>
-
-<a id="nocobran" name="nocobran"></a>
-<div class="panel panel-default">
-  <div class="panel-heading">Docentes del liceo con más de 2 inasistencias (no cobran la compensación por presentismo de este mes):</div>
-
-  <% hayDocentes=0 %>
-  <div class="panel-body">
-	<table class="table">
-	<% personalLiceo.forEach (function(info) { -%>
-		<% if (info.tipo != 1 && info.activo=="S" && arrInasistencias[ info.cedula ] && arrInasistencias[ info.cedula ][ info.TipoCargo() ] && arrInasistencias[ info.cedula ][ info.TipoCargo() ]>=2) {
-		   hayDocentes=1 %>
-		<tr>
-			<td><%= info.cedula %></td>
-			<td><%= info.PerNombreCompleto %></td>
-			<td><%= info.horas %> horas</td>
-			<td><%= info.cargo %></td>
-			<td><% if(arrInasistencias[ info.cedula ] && arrInasistencias[ info.cedula ][ info.TipoCargo() ]) { %>
-			  <%= arrInasistencias[ info.cedula ][ info.TipoCargo() ] %> FALTAS
-			<% } else { %>
-			  SIN FALTAS
-			<% } %></td>
-		</tr>
-		<% }
-	   });
-	   if (!hayDocentes) { %>
-		<tr><td>No hay docentes que cumplan este criterio</td></tr>
-	<% } %>
-	</table>
-  </div>
-</div>
-
-<a id="inactivos" name="inactivos"></a>
-<div class="panel panel-default">
-  <div class="panel-heading">Docentes del liceo sin actividad (no cobran la compensación por presentismo de este mes):</div>
-
-  <% hayDocentes=0 %>
-  <div class="panel-body">
-	<table class="table">
-	<% personalLiceo.forEach (function(info) { -%>
-		<% if (info.tipo != 1 && info.activo!="S") {
-		   hayDocentes=1 %>
-		<tr>
-			<td><%= info.cedula %></td>
-			<td><%= info.PerNombreCompleto %></td>
-			<td><%= info.horas %> horas</td>
-			<td><%= info.cargo %></td>
-			<td><% if(arrInasistencias[ info.cedula ] && arrInasistencias[ info.cedula ][ info.TipoCargo() ]) { %>
-			  <%= arrInasistencias[ info.cedula ][ info.TipoCargo() ] %> FALTAS
-			<% } else { %>
-			  SIN FALTAS
-			<% } %></td>
-		</tr>
-		<% }
-	   });
-	   if (!hayDocentes) { %>
-		<tr><td>No hay docentes que cumplan este criterio</td></tr>
-	<% } %>
-	</table>
-  </div>
-</div>
+<%- partial ('../personal/index.ejs') -%>
+<% } %>
 
 </div>
 

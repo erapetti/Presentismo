@@ -1,0 +1,94 @@
+<a id="cobran" name="cobran"></a>
+<div class="panel panel-default">
+  <div class="panel-heading">Docentes del liceo que deberían cobrar presentismo:</div>
+
+  <% hayDocentes=0 %>
+  <div class="panel-body">
+	<table class="table">
+	<% personalLiceo.forEach (function(info) { -%>
+		<% if (info.tipo != 1 && info.activo=="S" && (!arrInasistencias[ info.cedula ] || !arrInasistencias[ info.cedula ][ info.TipoCargo() ] || arrInasistencias[ info.cedula ][ info.TipoCargo() ]<2)) {
+		   hayDocentes=1 %>
+		<tr>
+			<td><%= info.cedula %></td>
+			<td><%= info.PerNombreCompleto %></td>
+			<td><%= info.horas %> horas</td>
+			<td><%= info.cargo %></td>
+			<td><% if(arrInasistencias[ info.cedula ] && arrInasistencias[ info.cedula ][ info.TipoCargo() ]) { %>
+			  <%= arrInasistencias[ info.cedula ][ info.TipoCargo() ] %> FALTA
+			<% } else { %>
+			  SIN FALTAS
+			<% } %></td>
+		</tr>
+		<% }
+	   });
+	   if (!hayDocentes) { %>
+		<tr><td>No hay docentes que cumplan este criterio</td></tr>
+	<% } %>
+	</table>
+	<% if (hayDocentes) { %>
+		<a id="form" name="form"></a>
+		<form><input type="hidden" name="mes" value="<%= infoMeses.mes.id %>"><button type="submit" name="aprobar" value="on" class="btn btn-primary">Cerrar el mes de <%= infoMeses.mes.nombre %></button></form>
+	<% } %>
+  </div>
+</div>
+
+<a id="nocobran" name="nocobran"></a>
+<div class="panel panel-default">
+  <div class="panel-heading">Docentes del liceo con más de 2 inasistencias (no cobran la compensación por presentismo de este mes):</div>
+
+  <% hayDocentes=0 %>
+  <div class="panel-body">
+	<table class="table">
+	<% personalLiceo.forEach (function(info) { -%>
+		<% if (info.tipo != 1 && info.activo=="S" && arrInasistencias[ info.cedula ] && arrInasistencias[ info.cedula ][ info.TipoCargo() ] && arrInasistencias[ info.cedula ][ info.TipoCargo() ]>=2) {
+		   hayDocentes=1 %>
+		<tr>
+			<td><%= info.cedula %></td>
+			<td><%= info.PerNombreCompleto %></td>
+			<td><%= info.horas %> horas</td>
+			<td><%= info.cargo %></td>
+			<td><% if(arrInasistencias[ info.cedula ] && arrInasistencias[ info.cedula ][ info.TipoCargo() ]) { %>
+			  <%= arrInasistencias[ info.cedula ][ info.TipoCargo() ] %> FALTAS
+			<% } else { %>
+			  SIN FALTAS
+			<% } %></td>
+		</tr>
+		<% }
+	   });
+	   if (!hayDocentes) { %>
+		<tr><td>No hay docentes que cumplan este criterio</td></tr>
+	<% } %>
+	</table>
+  </div>
+</div>
+
+<a id="inactivos" name="inactivos"></a>
+<div class="panel panel-default">
+  <div class="panel-heading">Docentes del liceo sin actividad (no cobran la compensación por presentismo de este mes):</div>
+
+  <% hayDocentes=0 %>
+  <div class="panel-body">
+	<table class="table">
+	<% personalLiceo.forEach (function(info) { -%>
+		<% if (info.tipo != 1 && info.activo!="S") {
+		   hayDocentes=1 %>
+		<tr>
+			<td><%= info.cedula %></td>
+			<td><%= info.PerNombreCompleto %></td>
+			<td><%= info.horas %> horas</td>
+			<td><%= info.cargo %></td>
+			<td><% if(arrInasistencias[ info.cedula ] && arrInasistencias[ info.cedula ][ info.TipoCargo() ]) { %>
+			  <%= arrInasistencias[ info.cedula ][ info.TipoCargo() ] %> FALTAS
+			<% } else { %>
+			  SIN FALTAS
+			<% } %></td>
+		</tr>
+		<% }
+	   });
+	   if (!hayDocentes) { %>
+		<tr><td>No hay docentes que cumplan este criterio</td></tr>
+	<% } %>
+	</table>
+  </div>
+</div>
+
