@@ -8,7 +8,7 @@ then
 	cd `echo "$0" | sed 's%/[^/]*$%%'`
 fi
 APP=`pwd | sed 's%.*/%%'`
-PIDFILE=/var/run/sails/$APP.pid
+PIDFILE=/var/run/sails_$APP.pid
 
 function running() {
 	if [ ! -r "$PIDFILE" ]
@@ -21,8 +21,7 @@ function running() {
 
 function start() {
 
-#	NODE_ENV=production sails lift --prod &
-	sails lift &
+	NODE_ENV=production sails lift --prod &
 
 	pid=$!
 	if [ -z "$pid" ]
@@ -67,3 +66,4 @@ case "$1" in
 esac
 
 exit 0
+
