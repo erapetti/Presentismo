@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<definitions name="ws_dame_datos_de_sesion" targetNamespace="portal3Ev2" xmlns:wsdlns="portal3Ev2" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="portal3Ev2">
+	<types>
+		<schema targetNamespace="portal3Ev2" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" elementFormDefault="qualified">
+			<element name="ws_dame_datos_de_sesion.Execute">
+				<complexType>
+					<sequence>
+						<element minOccurs="1" maxOccurs="1" name="Sesionesid" type="xsd:long"/>
+					</sequence>
+				</complexType>
+			</element>
+			<element name="ws_dame_datos_de_sesion.ExecuteResponse">
+				<complexType>
+					<sequence>
+						<element minOccurs="1" maxOccurs="1" name="Sesionesid" type="xsd:long"/>
+						<element minOccurs="1" maxOccurs="1" name="Userid" type="xsd:string"/>
+						<element minOccurs="1" maxOccurs="1" name="Dependid" type="xsd:int"/>
+						<element minOccurs="1" maxOccurs="1" name="Lugarid" type="xsd:int"/>
+					</sequence>
+				</complexType>
+			</element>
+		</schema>
+	</types>
+	<message name="ws_dame_datos_de_sesion.ExecuteSoapIn">
+		<part name="parameters" element="tns:ws_dame_datos_de_sesion.Execute"/>
+	</message>
+	<message name="ws_dame_datos_de_sesion.ExecuteSoapOut">
+		<part name="parameters" element="tns:ws_dame_datos_de_sesion.ExecuteResponse"/>
+	</message>
+	<portType name="ws_dame_datos_de_sesionSoapPort">
+		<operation name="Execute">
+			<input message="wsdlns:ws_dame_datos_de_sesion.ExecuteSoapIn"/>
+			<output message="wsdlns:ws_dame_datos_de_sesion.ExecuteSoapOut"/>
+		</operation>
+	</portType>
+	<binding name="ws_dame_datos_de_sesionSoapBinding" type="wsdlns:ws_dame_datos_de_sesionSoapPort">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<operation name="Execute">
+			<soap:operation soapAction="portal3Ev2action/AWS_DAME_DATOS_DE_SESION.Execute"/>
+			<input>
+				<soap:body use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+			</output>
+		</operation>
+	</binding>
+	<service name="ws_dame_datos_de_sesion">
+		<port name="ws_dame_datos_de_sesionSoapPort" binding="wsdlns:ws_dame_datos_de_sesionSoapBinding">
+			<soap:address location="http://servicios.ces.edu.uy/Portal/servlet/aws_dame_datos_de_sesion"/>
+		</port>
+	</service>
+</definitions>
