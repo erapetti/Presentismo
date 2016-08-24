@@ -7,7 +7,7 @@
 
 module.exports = {
 
-	connection: 'presentismo',
+	connection: 'Personal',
 	autoCreatedAt: false,
 	autoUpdatedAt: false,
 	autoPK: false,

@@ -21,4 +21,7 @@ module.exports = {
   //   connection: 'someMongodbServer'
   // }
 
+   paths: {
+	public: '.tmp/development'
+   },
 };

@@ -12,7 +12,7 @@ module.exports = {
 	autoUpdatedAt: false,
 	autoPK: false,
 	migrate: 'safe',
-	tableName: 'as400',
+	tableName: 'cierres',
 	attributes: {
 		anio: {
 			type: 'integer',
@@ -26,24 +26,9 @@ module.exports = {
 			type: 'integer',
 			primaryKey: true
 		},
-		tipo: {
-			type: 'integer',
-			primaryKey: true
-		},
-		cedula: {
-			type: 'integer',
-			primaryKey: true
-		},
-		PerNombreCompleto: 'string',
-		codcargo: 'string',
-		cargo: 'string',
-		DependDesc: 'string',
-		horas: 'integer',
-		activo: 'string',
-		TipoCargo: function() {
-			return (this.tipo==1 ? 'ND' : (this.tipo==2 ? 'DI' : 'DD'));
-		},
+		userid: 'string',
+		CreatedAt: 'date',
+		UpdatedAt: 'date',
 	}
-
 };
 

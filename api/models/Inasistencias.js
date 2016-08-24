@@ -27,7 +27,7 @@ module.exports = {
 		 JOIN Personas.PERSONASDOCUMENTOS				\
 		   ON personalperid=perid and paiscod="UY" and doccod="CI"	\
 		 LEFT JOIN INASISLIC_LICENCIA_DIAS ID				\
-		USING (InasisLicId)						\
+		USING (InasisLicId,PersonalPerId)				\
 		WHERE LiceoPlanDependId=?					\
 		  AND InasisLicFchFin>=?					\
 		  AND InasisLicFchIni<=?					\

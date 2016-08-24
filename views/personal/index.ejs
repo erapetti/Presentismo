@@ -64,7 +64,7 @@
 
 <a id="inactivos" name="inactivos"></a>
 <div class="panel panel-default">
-  <div class="panel-heading">Docentes del liceo sin actividad (no cobran la compensación por presentismo de este mes):</div>
+  <div class="panel-heading">Docentes del liceo que no completaron el mes de actividad (no cobran la compensación por presentismo de este mes):</div>
 
   <% hayDocentes=0 %>
   <div class="panel-body">
@@ -77,11 +77,7 @@
 			<td><%= info.PerNombreCompleto %></td>
 			<td><%= info.horas %> horas</td>
 			<td><%= info.cargo %></td>
-			<td><% if(arrInasistencias[ info.cedula ] && arrInasistencias[ info.cedula ][ info.TipoCargo() ]) { %>
-			  <%= arrInasistencias[ info.cedula ][ info.TipoCargo() ] %> FALTAS
-			<% } else { %>
-			  SIN FALTAS
-			<% } %></td>
+			<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 		</tr>
 		<% }
 	   });

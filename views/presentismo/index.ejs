@@ -1,6 +1,7 @@
 <div id="heading" class="jumbotron">
 <h1>Cierre mensual de presentismo</h1>
 <p>Todos los liceos deben informar mensualmente que han ingresado en el sistema todas las inasistencias de los docentes para que se pueda realizar el cálculo de la compensación por presentismo.</p>
+<p>Los liceos que no realicen el cierre mensual no estarán incluidos en el pago de presentismo.</p>
 </div>
 
 <div id="content">
@@ -15,19 +16,19 @@
 	<ul class="nav nav-pills nav-justified">
 	  <li role="presentation"<% if (infoMeses.mes1.class) { %> class="<%= infoMeses.mes1.class %>"<% } %>><a<% if (!infoMeses.mes1.class) { %> href="?mes=1"<% } %>><%= infoMeses.mes1.nombre %></a></li>
 	</ul>
-	<p class="center"><% if (infoMeses.mes1.inhabilitado) {%>Aún no está habilitado<%} else { if (infoMeses.mes1.vencido) {%>Vencido<%} else {%>Vencimiento<%}%>: <%= infoMeses.mes1.vencimiento.toLocaleDateString() %><%}%></p>
+	<p class="center"><% if (infoMeses.mes1.inhabilitado) {%>Aún no está habilitado<%} else { if (infoMeses.mes1.vencido) {%>Vencido<%} else {%>Vencimiento<%}%>: <%= infoMeses.mes1.vencimiento.toString() %><%}%></p>
     </div>
     <div class="col-xs-4">
 	<ul class="nav nav-pills nav-justified">
 	  <li role="presentation"<% if (infoMeses.mes2.class) { %> class="<%= infoMeses.mes2.class %>"<% } %>><a<% if (!infoMeses.mes2.class) { %> href="?mes=2"<% } %>><%= infoMeses.mes2.nombre %></a></li>
 	</ul>
-	<p class="center"><% if (infoMeses.mes2.inhabilitado) {%>Aún no está habilitado<%} else { if (infoMeses.mes2.vencido) {%>Vencido<%} else {%>Vencimiento<%}%>: <%= infoMeses.mes2.vencimiento.toLocaleDateString() %><%}%></p>
+	<p class="center"><% if (infoMeses.mes2.inhabilitado) {%>Aún no está habilitado<%} else { if (infoMeses.mes2.vencido) {%>Vencido<%} else {%>Vencimiento<%}%>: <%= infoMeses.mes2.vencimiento.toString() %><%}%></p>
     </div>
     <div class="col-xs-4">
 	<ul class="nav nav-pills nav-justified">
 	  <li role="presentation"<% if (infoMeses.mes3.class) { %> class="<%= infoMeses.mes3.class %>"<% } %>><a<% if (!infoMeses.mes3.class) { %> href="?mes=3"<% } %>><%= infoMeses.mes3.nombre %></a></li>
 	</ul>
-	<p class="center"><% if (infoMeses.mes3.inhabilitado) {%>Aún no está habilitado<%} else { if (infoMeses.mes3.vencido) {%>Vencido<%} else {%>Vencimiento<%}%>: <%= infoMeses.mes3.vencimiento.toLocaleDateString() %><%}%></p>
+	<p class="center"><% if (infoMeses.mes3.inhabilitado) {%>Aún no está habilitado<%} else { if (infoMeses.mes3.vencido) {%>Vencido<%} else {%>Vencimiento<%}%>: <%= infoMeses.mes3.vencimiento.toString() %><%}%></p>
     </div>
   </div>
 </div>
