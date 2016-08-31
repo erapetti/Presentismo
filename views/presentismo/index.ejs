@@ -8,30 +8,42 @@
 
 <div id="presentismo">
 
+<% if (typeof mensaje !== 'undefined') { -%>
+<div class="alert alert-danger">
+	<strong>ERROR:</strong> <%= mensaje %>
+</div>
+<% } -%>
+
+<form method="post">
+<input type="hidden" name="dependid" value="<%= DependId %>">
 <div class="panel panel-default">
   <div class="panel-heading">Mes:</div>
 
   <div class="panel-body">
-    <div class="col-xs-4">
+    <div class="col-xs-4 center">
 	<ul class="nav nav-pills nav-justified">
 	  <li role="presentation"<% if (infoMeses.mes1.class) { %> class="<%= infoMeses.mes1.class %>"<% } %>><a<% if (!infoMeses.mes1.class) { %> href="?mes=1"<% } %>><%= infoMeses.mes1.nombre %></a></li>
 	</ul>
-	<p class="center"><% if (infoMeses.mes1.inhabilitado) {%>Aún no está habilitado<%} else { if (infoMeses.mes1.vencido) {%>Vencido<%} else {%>Vencimiento<%}%>: <%= infoMeses.mes1.vencimiento.toString() %><%}%></p>
+	<p><% if (infoMeses.mes1.inhabilitado) {%>Aún no está habilitado<%} else { %><%= infoMeses.mes1.estado %>: <%= infoMeses.fecha_toString(infoMeses.mes1.fecha) %><%}%></p>
+	<% if (infoMeses.mes.id==1 && infoMeses.mes1.estado!="Presentado") {%><button type="submit" name="cerrar" value="1" class="btn btn-success">Cerrar el mes de <%= infoMeses.mes1.nombre %></button><% } %>
     </div>
-    <div class="col-xs-4">
+    <div class="col-xs-4 center">
 	<ul class="nav nav-pills nav-justified">
 	  <li role="presentation"<% if (infoMeses.mes2.class) { %> class="<%= infoMeses.mes2.class %>"<% } %>><a<% if (!infoMeses.mes2.class) { %> href="?mes=2"<% } %>><%= infoMeses.mes2.nombre %></a></li>
 	</ul>
-	<p class="center"><% if (infoMeses.mes2.inhabilitado) {%>Aún no está habilitado<%} else { if (infoMeses.mes2.vencido) {%>Vencido<%} else {%>Vencimiento<%}%>: <%= infoMeses.mes2.vencimiento.toString() %><%}%></p>
+	<p><% if (infoMeses.mes2.inhabilitado) {%>Aún no está habilitado<%} else { %><%= infoMeses.mes2.estado %>: <%= infoMeses.fecha_toString(infoMeses.mes2.fecha) %><%}%></p>
+	<% if (infoMeses.mes.id==2 && infoMeses.mes2.estado!="Presentado") {%><button type="submit" name="cerrar" value="2" class="btn btn-success">Cerrar el mes de <%= infoMeses.mes2.nombre %></button><% } %>
     </div>
-    <div class="col-xs-4">
+    <div class="col-xs-4 center">
 	<ul class="nav nav-pills nav-justified">
 	  <li role="presentation"<% if (infoMeses.mes3.class) { %> class="<%= infoMeses.mes3.class %>"<% } %>><a<% if (!infoMeses.mes3.class) { %> href="?mes=3"<% } %>><%= infoMeses.mes3.nombre %></a></li>
 	</ul>
-	<p class="center"><% if (infoMeses.mes3.inhabilitado) {%>Aún no está habilitado<%} else { if (infoMeses.mes3.vencido) {%>Vencido<%} else {%>Vencimiento<%}%>: <%= infoMeses.mes3.vencimiento.toString() %><%}%></p>
+	<p><% if (infoMeses.mes3.inhabilitado) {%>Aún no está habilitado<%} else { %><%= infoMeses.mes3.estado %>: <%= infoMeses.fecha_toString(infoMeses.mes3.fecha) %><%}%></p>
+	<% if (infoMeses.mes.id==3 && infoMeses.mes3.estado!="Presentado") {%><button type="submit" name="cerrar" value="3" class="btn btn-success">Cerrar el mes de <%= infoMeses.mes3.nombre %></button><% } %>
     </div>
   </div>
 </div>
+</form>
 
 <% if (infoMeses.mes.id) { -%>
 <div id="indice">

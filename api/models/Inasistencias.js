@@ -24,16 +24,18 @@ module.exports = {
 		       InasisLicTipo,						\
 		       IF(InasisLicFchIni=InasisLicFchFin,1,GREATEST(InasisLicid_Dias,0)) inasistencias \
 		 FROM Personal.INASISLIC					\
+		 JOIN FUNCIONES_ASIGNADAS USING (FuncAsignadaId)		\
+		 JOIN SILLAS USING (SillaId)					\
 		 JOIN Personas.PERSONASDOCUMENTOS				\
 		   ON personalperid=perid and paiscod="UY" and doccod="CI"	\
 		 LEFT JOIN INASISLIC_LICENCIA_DIAS ID				\
 		USING (InasisLicId,PersonalPerId)				\
-		WHERE LiceoPlanDependId=?					\
+		WHERE ((LiceoPlanDependId is null and SillaDependid=?) OR LiceoPlanDependId=?)		\
 		  AND InasisLicFchFin>=?					\
 		  AND InasisLicFchIni<=?					\
 		  AND (ID.InasisLicId is null or ID.InasisLicId_Mes = ?)	\
 		GROUP BY perdocid,LiceoPlanDependId,InasisLicTipo,InasisLicId',
-		[data.DependId, data.Anio+'-'+data.Mes+'-01', data.Anio+'-'+data.Mes+'-31',data.Mes],
+		[data.DependId,data.DependId, data.Anio+'-'+data.Mes+'-01', data.Anio+'-'+data.Mes+'-31',data.Mes],
 		callback);
 	},
 };

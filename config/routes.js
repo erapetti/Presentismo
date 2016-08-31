@@ -36,8 +36,12 @@ module.exports.routes = {
 //    view: 'homepage'
     controller: 'presentismo',
     action: 'index'
+  },
 
-  }
+  '/node/*': function(req, res) {
+	res.redirect(req.path.replace('/node',''));
+  },
+
 
   /***************************************************************************
   *                                                                          *

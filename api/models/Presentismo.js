@@ -8,11 +8,11 @@
 module.exports = {
 
 	connection: 'presentismo',
-	autoCreatedAt: false,
-	autoUpdatedAt: false,
+	autoCreatedAt: true,
+	autoUpdatedAt: true,
 	autoPK: false,
 	migrate: 'safe',
-	tableName: 'cierres',
+	tableName: 'presentismo_cierre',
 	attributes: {
 		anio: {
 			type: 'integer',
@@ -27,8 +27,6 @@ module.exports = {
 			primaryKey: true
 		},
 		userid: 'string',
-		CreatedAt: 'date',
-		UpdatedAt: 'date',
 	}
 };
 

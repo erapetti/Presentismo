@@ -25,10 +25,6 @@
 		<tr><td>No hay docentes que cumplan este criterio</td></tr>
 	<% } %>
 	</table>
-	<% if (hayDocentes) { %>
-		<a id="form" name="form"></a>
-		<form><input type="hidden" name="mes" value="<%= infoMeses.mes.id %>"><button type="submit" name="aprobar" value="on" class="btn btn-primary">Cerrar el mes de <%= infoMeses.mes.nombre %></button></form>
-	<% } %>
   </div>
 </div>
 
