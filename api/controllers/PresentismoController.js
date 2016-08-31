@@ -90,7 +90,7 @@ module.exports = {
 						} else {
 							sails.log("data="+data);
 							sails.log("Cierre de mes="+cerrar+" dependid=session.Dependid");
-							return res.redirect('');
+							return res.redirect('#');
 						}
 					});
 					return;
