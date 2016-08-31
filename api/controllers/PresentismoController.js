@@ -57,7 +57,7 @@ module.exports = {
 			infoMeses.mes3.estado = (now > infoMeses.mes3.fecha.getTime() ? "Vencido" : "Vencimiento");
 			infoMeses.mes3.class = (infoMeses.mes3.inhabilitado ? "disabled" : mes==3 ? "active" : undefined);
 
-			infoMeses.fecha_toString = function(d) {return sprintf("%02d/%02d/%04d", d.getDate(),d.getMonth(),d.getFullYear())};
+			infoMeses.fecha_toString = function(d) {return sprintf("%02d/%02d/%04d", d.getDate(),d.getMonth()+1,d.getFullYear())};
 
 
 
