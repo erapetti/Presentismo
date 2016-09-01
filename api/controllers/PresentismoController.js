@@ -120,13 +120,21 @@ module.exports = {
 						arrInasistencias[info.perdocid][info.InasisLicTipo] += info.inasistencias;
 					});
 
+					// obtengo los certificados que faltan en la dependencia
+					var certificados;
+					try {
+						var fs = require('fs');
+						fs.accessSync("assets/files/"+session.Dependid+".ods", fs.R_OK);
+						certificados = "files/"+session.Dependid+".ods";
+					} catch(e) { sails.log("error="+e) };
+
 					// obtengo las personas de la dependencia:
 					Personal.find({Anio:anio,Mes:mes,DependId:session.Dependid}).sort('PerNombreCompleto ASC').exec(function(err, personalLiceo) {
 						if (err) {
 							return res.serverError(err);
 						}
 
-						return res.view({arrInasistencias:arrInasistencias, personalLiceo:personalLiceo, infoMeses:infoMeses, DependId:session.Dependid, presentismo:presentismo});
+						return res.view({arrInasistencias:arrInasistencias, personalLiceo:personalLiceo, infoMeses:infoMeses, DependId:session.Dependid, presentismo:presentismo, certificados:certificados});
 					});
 				});
 			});

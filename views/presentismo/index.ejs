@@ -46,11 +46,17 @@
 </form>
 
 <% if (infoMeses.mes.id) { -%>
+<%	if (certificados) { -%>
+<div class="alert alert-danger">
+        <strong>ATENCIÓN:</strong> Hay certificaciones médicas declaradas en CODICEN que no están ingresadas como licencias en su liceo. Puede consultar el listado haciendo clic <a href="<%= certificados %>">aquí.</a>
+</div>
+<%	 } -%>
+
+
 <div id="indice">
 <h2>Contenido:</h2>
 <ul>
 	<li><a href="#cobran">Docentes que cobran presentismo</a></li>
-	<li><a href="#form">Envío del cierre del mes</a></li>
 	<li><a href="#nocobran">Docentes que no cobran presentismo</a></li>
 	<li><a href="#inactivos">Docentes inactivos</a></li>
 </ul>
