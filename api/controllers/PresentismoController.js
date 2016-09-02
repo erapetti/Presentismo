@@ -86,7 +86,7 @@ module.exports = {
 						if (err) {
 							sails.log("error="+err);
 							mensaje = "No se pudo cerrar el mes por un error al acceder a la base de datos";
-							return res.view({infoMeses:infoMeses, DependId:session.Dependid, presentismo:presentismo,  mensaje:mensaje});
+							return res.view({infoMeses:infoMeses, DependId:session.Dependid, presentismo:presentismo,  mensaje:mensaje, certificados:undefined});
 						} else {
 							sails.log("data="+data);
 							sails.log("Cierre de mes="+cerrar+" dependid=session.Dependid");
@@ -97,7 +97,7 @@ module.exports = {
 				}
 
 				if (!mes) {
-					return res.view({infoMeses:infoMeses, DependId:session.Dependid, presentismo:presentismo});
+					return res.view({infoMeses:infoMeses, DependId:session.Dependid, presentismo:presentismo, certificados:undefined});
 				}
 
 				mes+=mesBase;
