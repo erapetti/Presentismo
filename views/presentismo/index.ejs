@@ -42,15 +42,16 @@
 	<% if (infoMeses.mes.id==3 && infoMeses.mes3.estado!="Presentado") {%><button type="submit" name="cerrar" value="3" class="btn btn-success">Cerrar el mes de <%= infoMeses.mes3.nombre %></button><% } %>
     </div>
   </div>
+
+<%	if (certificados) { -%>
+<div class="alert alert-danger" style="margin-left:1em;margin-right:1em">
+        <strong>ATENCIÓN:</strong> Hay certificaciones médicas declaradas en CODICEN que no están ingresadas como licencias en su liceo. Puede consultar el listado haciendo clic <a href="<%= certificados %>">aquí.</a>
+</div>
+<%	 } -%>
 </div>
 </form>
 
 <% if (infoMeses.mes.id) { -%>
-<%	if (certificados) { -%>
-<div class="alert alert-danger">
-        <strong>ATENCIÓN:</strong> Hay certificaciones médicas declaradas en CODICEN que no están ingresadas como licencias en su liceo. Puede consultar el listado haciendo clic <a href="<%= certificados %>">aquí.</a>
-</div>
-<%	 } -%>
 
 
 <div id="indice">
