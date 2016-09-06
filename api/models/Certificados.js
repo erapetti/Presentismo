@@ -29,30 +29,46 @@ module.exports = {
 		return this.query('												\
 		SELECT certid,													\
 		       C.InasisLicFecha,											\
-		       cedula*10+digito cedula,											\
-		       PerNombreCompleto,											\
+		       A.cedula,												\
+		       A.PerNombreCompleto,											\
 		       C.InasisLicFchIni,											\
 		       C.InasisLicFchFin,											\
-		       case codlic when "J" then "Junta Médica" when "L" then "Lactancia" when "M" then "Maternidad" when "E" then "Enfermedad" when "EM" then "Medio horario por enfermedad" when "LM" then "Medio horario por lactancia" end tipoLicencia,				\
-			cargo,													\
-			horas,													\
-			observaciones												\
+		       case codlic												\
+				when "J" then "Junta Médica"									\
+				when "L" then "Lactancia"									\
+				when "M" then "Maternidad"									\
+				when "E" then "Enfermedad"									\
+				when "EM" then "Medio horario por enfermedad"							\
+				when "LM" then "Medio horario por lactancia"							\
+		       end tipoLicencia,											\
+		       C.cargo,													\
+		       C.horas,													\
+		       observaciones												\
 		 FROM Personal.certificaciones_anep C										\
+		 JOIN as400 A													\
+		   ON cast((A.cedula/10) as decimal)=C.cedula									\
 		 JOIN Personas.PERSONASDOCUMENTOS										\
-		   ON perdocid=concat(cedula,digito) and paiscod="UY" and doccod="CI"						\
-		 JOIN Personas.PERSONAS P using (perid)										\
-		 LEFT JOIN INASISLIC I												\
-		   ON personalperid=perid and C.InasisLicFchIni=I.InasisLicFchIni and C.InasisLicFchFin=I.InasisLicFchFin	\
-                 LEFT JOIN FUNCIONES_ASIGNADAS USING (FuncAsignadaId)								\
-                 LEFT JOIN SILLAS USING (SillaId)										\
-		WHERE InasisLicId is null											\
-		  AND codlic<>"N"												\
-		  AND ((LiceoPlanDependId is null and SillaDependid=?) OR LiceoPlanDependId=?)					\
+		   ON perdocid=cast(A.cedula as char(30)) AND paiscod="UY" AND doccod="CI"						\
+		WHERE codlic<>"N"												\
 		  AND C.InasisLicFchFin>=?											\
 		  AND C.InasisLicFchIni<=?											\
+		  AND A.dependid=?												\
+		  AND A.mes=?													\
+		  AND A.tipo<>1													\
+		  AND NOT EXISTS (												\
+			SELECT 1												\
+			FROM INASISLIC I											\
+                 	JOIN FUNCIONES_ASIGNADAS USING (FuncAsignadaId)								\
+                 	JOIN SILLAS USING (SillaId)										\
+			WHERE personalperid=perid										\
+			  AND C.InasisLicFchIni=I.InasisLicFchIni								\
+			  AND C.InasisLicFchFin=I.InasisLicFchFin								\
+		  	  AND SillaDependid=?											\
+		  )														\
+		GROUP BY certid,C.InasisLicFecha,A.cedula,C.InasisLicFchIni,C.InasisLicFchFin,codlic,C.cargo,C.horas,observaciones \
+		ORDER BY perdocid,C.InasisLicFchIni										\
 		',
-		[data.DependId,data.DependId, data.Anio+'-'+data.Mes+'-01', data.Anio+'-'+data.Mes+'-31'],
+		[data.Anio+'-'+data.Mes+'-01', data.Anio+'-'+data.Mes+'-31', data.DependId, data.Mes, data.DependId],
 		callback);
 	},
 };
-

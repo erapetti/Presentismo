@@ -2,6 +2,7 @@
 <h1>Cierre mensual de presentismo</h1>
 <p>Todos los liceos deben informar mensualmente que han ingresado en el sistema todas las inasistencias de los docentes para que se pueda realizar el cálculo de la compensación por presentismo.</p>
 <p>Los liceos que no realicen el cierre mensual no estarán incluidos en el pago de presentismo.</p>
+<p>Todos los períodos de licencia certificada deben estar ingresados en el corporativo.</p>
 </div>
 
 <div id="content">
@@ -43,11 +44,6 @@
     </div>
   </div>
 
-<%	if (certificados) { -%>
-<div class="alert alert-danger" style="margin-left:1em;margin-right:1em">
-        <strong>ATENCIÓN:</strong> Hay certificaciones médicas declaradas en CODICEN que no están ingresadas como licencias en su liceo. Puede consultar el listado haciendo clic <a href="<%= certificados %>">aquí.</a>
-</div>
-<%	 } -%>
 </div>
 </form>
 
@@ -57,11 +53,42 @@
 <div id="indice">
 <h2>Contenido:</h2>
 <ul>
+	<% if (Object.keys(certificados).length>0) { -%>
+	<li><a href="#certificados">Docentes con licencias certificadas que no están ingresadas al corporativo</a></li>
+	<% } -%>
 	<li><a href="#cobran">Docentes que cobran presentismo</a></li>
 	<li><a href="#nocobran">Docentes que no cobran presentismo</a></li>
 	<li><a href="#inactivos">Docentes inactivos</a></li>
 </ul>
 </div>
+
+<%	if (Object.keys(certificados).length>0) { -%>
+<a id="certificados" name="certificados"></a>
+<div class="panel panel-default">
+  <div class="panel-heading bg-danger">Docentes con licencias certificadas que no están ingresadas al corporativo:</div>
+
+  <div class="panel-body bg-danger">
+        <table class="table">
+		<tr>
+			<th>Cédula</th>
+			<th>Nombre</th>
+			<th>Desde</th>
+			<th>Hasta</th>
+			<th>Causal</th>
+		</tr>
+        <% certificados.forEach (function(info) { -%>
+                <tr>
+                        <td><%= info.cedula %></td>
+                        <td><%= info.PerNombreCompleto %></td>
+                        <td><%= infoMeses.fecha_toString(info.InasisLicFchIni) %></td>
+                        <td><%= infoMeses.fecha_toString(info.InasisLicFchFin) %></td>
+                        <td><%= info.tipoLicencia %></td>
+		</tr>
+	<% }) -%>
+	</table>
+  </div>
+</div>
+<%	 } -%>
 
 <%- partial ('../personal/index.ejs') -%>
 <% } %>
