@@ -4,4 +4,5 @@
 
 
 cd /home/erapetti/Presentismo
-NODE_ENV=production sails lift --prod
+export NODE_ENV=production
+exec sails lift --prod
