@@ -15,7 +15,7 @@ module.exports = {
 		} else {
 			sessionid = req.cookies.SESION;
 		}
-		Portal.getSession(sessionid, function(err,session) {
+		wsPortal.getSession(sessionid, function(err,session) {
 			if (sails.config.environment === "development") {
 				err = undefined;
 				session = {Sesionesid:1,Userid:'u19724241',Dependid:232,Lugarid:232};
@@ -89,7 +89,7 @@ module.exports = {
 							return res.view({infoMeses:infoMeses, DependId:session.Dependid, presentismo:presentismo,  mensaje:mensaje, certificados:undefined});
 						} else {
 							sails.log("data="+data);
-							sails.log("Cierre de mes="+cerrar+" dependid=session.Dependid");
+							sails.log("Cierre de mes="+cerrar+" dependid="+session.Dependid);
 							return res.redirect(sails.config.environment==='development' ? '' : '/node/presentismo');
 						}
 					});
@@ -103,7 +103,7 @@ module.exports = {
 				mes+=mesBase;
 				infoMeses.mes.id = mes-mesBase;
 				infoMeses.mes.nombre = meses[mes];
-					
+
 				// obtengo todas las inasistencias de la dependencia:
 				Inasistencias.get({DependId:session.Dependid,Anio:anio,Mes:mes}, function(err, inasistencias) {
 					if (err) {
@@ -112,7 +112,7 @@ module.exports = {
 
 					// transformo las inasistencias en un array
 					var arrInasistencias = Array();
-					inasistencias.forEach(function(info) { 
+					inasistencias.forEach(function(info) {
 						if (!arrInasistencias[info.perdocid]) {
 							arrInasistencias[info.perdocid] = Array();
 							arrInasistencias[info.perdocid][info.InasisLicTipo] = 0;
@@ -138,5 +138,56 @@ module.exports = {
 				});
 			});
 		});
-	}
+	},
+
+	pendientes: function (req, res) {
+
+		var sessionid;
+		if (sails.config.environment === "development") {
+			sessionid = '9728448076454730240';
+		} else {
+			sessionid = req.cookies.SESION;
+		}
+		wsPortal.getSession(sessionid, function(err,session) {
+			if (sails.config.environment === "development") {
+				err = undefined;
+				session = {Sesionesid:1,Userid:'u34551411',Dependid:2710,Lugarid:2710};
+			}
+			if (err) {
+				return res.forbidden(err);
+				//err.status = 403;
+				//return res.negotiate(err);
+			}
+
+			var mesBase = 5;
+			var meses = ['','enero','febrero','marzo','abril','mayo','junio',
+						 'julio','agosto','setiembre','octubre','noviembre','diciembre'];
+			var mes = parseInt(req.param('mes'));
+			var anio = 2016;
+
+			var sprintf = require("sprintf");
+
+			Portal.getDependsWithMenu({Userid:session.Userid, Menuid:'MP_INASISTENCIAS_LICENCIAS_LICEOS'}, function(err,depends) {
+				if (err) {
+					return res.serverError(err);
+				}
+				//Presentismo.find({anio:anio, mes:mesBase+1, DependId:depends.map(function(i){ return i.dependid })}).exec(function(err, presentismo) {
+				Presentismo.find({anio:anio, mes:mesBase+1}).exec(function(err, presentismo) {
+					if (err) {
+						return res.serverError(err);
+					}
+
+					var infoMeses = {mes1:Array(), mes2:Array(), mes3:Array()};
+					infoMeses.fecha_toString = function(d) {return sprintf("%02d/%02d/%04d", d.getDate(),d.getMonth()+1,d.getFullYear())};
+
+					presentismo.forEach (function(info){
+						infoMeses.mes1[info.DependId] = info.updatedAt;
+					});
+
+					res.view({depends:depends, infoMeses:infoMeses})
+				});
+			});
+		});
+	},
+
 };

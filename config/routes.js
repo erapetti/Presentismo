@@ -38,6 +38,11 @@ module.exports.routes = {
     action: 'index'
   },
 
+  '/pendientes': {
+      controller: 'presentismo',
+      action: 'pendientes'
+  },
+
   '/node/*': function(req, res) {
 	res.redirect(req.path.replace('/node',''));
   },

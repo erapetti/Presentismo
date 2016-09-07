@@ -20,7 +20,7 @@ module.exports = {
 				if (!result.Userid) {
 					return callback(new Error("Sesión no válida. Reinicie su conexión con el portal de servicios"),undefined);
 				}
-				Portal.leoPermiso({Sesionesid:sesionId,Programa:'presentismo',Modo:'DSP'}, function(err, permiso) {
+				wsPortal.leoPermiso({Sesionesid:sesionId,Programa:'presentismo',Modo:'DSP'}, function(err, permiso) {
 					if (err) {
 						return callback(err, undefined);
 					}
@@ -31,7 +31,7 @@ module.exports = {
 				});
 			});
 		});
-	
+
 	},
 
 	leoPermiso: function(args, callback) {
@@ -51,4 +51,5 @@ module.exports = {
 			});
 		});
 	},
+
 };

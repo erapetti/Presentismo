@@ -30,6 +30,7 @@ module.exports.policies = {
   '*': false,
   PresentismoController: {
 	index: true,
+  pendientes: true,
   },
 
   /***************************************************************************
