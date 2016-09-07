@@ -41,8 +41,16 @@ module.exports.routes = {
     controller: 'presentismo',
     action: 'index'
   },
+  '//index': {
+    controller: 'presentismo',
+    action: 'index'
+  },
 
   '/pendientes': {
+      controller: 'presentismo',
+      action: 'pendientes'
+  },
+  '//pendientes': {
       controller: 'presentismo',
       action: 'pendientes'
   },
