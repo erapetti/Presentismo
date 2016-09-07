@@ -47,8 +47,8 @@ module.exports.routes = {
       action: 'pendientes'
   },
 
-  '/node/*': function(req, res) {
-	res.redirect(req.path.replace('/node',''));
+  '/node/presentismo/*': function(req, res) {
+	res.redirect(req.path.replace('/node/presentismo',''));
   },
 
 

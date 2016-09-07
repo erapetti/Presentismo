@@ -5,6 +5,10 @@
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 
+
+var meses = ['','enero','febrero','marzo','abril','mayo','junio',
+						 'julio','agosto','setiembre','octubre','noviembre','diciembre'];
+
 module.exports = {
 
 	index: function (req, res) {
@@ -27,8 +31,7 @@ module.exports = {
 			}
 
 			var mesBase = 5;
-			var meses = ['','enero','febrero','marzo','abril','mayo','junio',
-				     'julio','agosto','setiembre','octubre','noviembre','diciembre'];
+
 			var mes = parseInt(req.param('mes'));
 			var anio = 2016;
 
@@ -171,20 +174,45 @@ module.exports = {
 				if (err) {
 					return res.serverError(err);
 				}
-				//Presentismo.find({anio:anio, mes:mesBase+1, DependId:depends.map(function(i){ return i.dependid })}).exec(function(err, presentismo) {
-				Presentismo.find({anio:anio, mes:mesBase+1}).exec(function(err, presentismo) {
+
+				var infoMeses = {mes1:Array(), mes2:Array(), mes3:Array()};
+				infoMeses.mes1.nombre = meses[mesBase+1];
+				infoMeses.mes2.nombre = meses[mesBase+3];
+				infoMeses.mes3.nombre = meses[mesBase+3];
+				infoMeses.fecha_toString = function(d) {return sprintf("%02d/%02d/%04d", d.getDate(),d.getMonth()+1,d.getFullYear())};
+
+				//Presentismo.find({anio:anio, mes:mesBase+1, DependId:depends.map(function(i){ return i.dependid })}).exec(function(err, presentismo)
+				var arrDepends = depends.map(function(i){ return i.dependid });
+				Presentismo.find({anio:anio, mes:mesBase+1, DependId:arrDepends}).exec(function(err, presentismo) {
 					if (err) {
 						return res.serverError(err);
 					}
-
-					var infoMeses = {mes1:Array(), mes2:Array(), mes3:Array()};
-					infoMeses.fecha_toString = function(d) {return sprintf("%02d/%02d/%04d", d.getDate(),d.getMonth()+1,d.getFullYear())};
 
 					presentismo.forEach (function(info){
 						infoMeses.mes1[info.DependId] = info.updatedAt;
 					});
 
-					res.view({depends:depends, infoMeses:infoMeses})
+					Presentismo.find({anio:anio, mes:mesBase+2, DependId:arrDepends}).exec(function(err, presentismo) {
+						if (err) {
+							return res.serverError(err);
+						}
+
+						presentismo.forEach (function(info){
+							infoMeses.mes2[info.DependId] = info.updatedAt;
+						});
+
+						Presentismo.find({anio:anio, mes:mesBase+3, DependId:arrDepends}).exec(function(err, presentismo) {
+							if (err) {
+								return res.serverError(err);
+							}
+
+							presentismo.forEach (function(info){
+								infoMeses.mes3[info.DependId] = info.updatedAt;
+							});
+
+							res.view({depends:depends, infoMeses:infoMeses})
+						});
+					});
 				});
 			});
 		});

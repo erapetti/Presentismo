@@ -9,4 +9,4 @@ div#presentismo div#indice { padding:1em 0;font-size:120% }
 div#presentismo div#indice h2 { background-color:rgba(255,255,255,0.5) }
 div#presentismo div#indice ul { background-color:rgba(255,255,255,0.5) }
 .center { text-align:center }
-div#prendientes table { background-color:#fff }
+div#pendientes table { background-color:#fff; width:90%; margin-left:auto; margin-right:auto; }
