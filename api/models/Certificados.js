@@ -46,7 +46,7 @@ module.exports = {
 		       observaciones
 		 FROM Personal.certificaciones_anep C
 		 JOIN as400 A
-		   ON cast((A.cedula/10) as decimal)=C.cedula
+		   ON floor(A.cedula/10)=C.cedula
 		 JOIN Personas.PERSONASDOCUMENTOS
 		   ON perdocid=cast(A.cedula as char(30)) AND paiscod="UY" AND doccod="CI"
 		WHERE codlic<>"N"
@@ -56,21 +56,21 @@ module.exports = {
 		  AND A.mes=?
 		  AND A.tipo<>1
 		  AND NOT EXISTS (
-			SELECT 1
-			FROM INASISLIC I
-                 	JOIN FUNCIONES_ASIGNADAS USING (FuncAsignadaId)
-                 	JOIN SILLAS USING (SillaId)
-			WHERE personalperid=perid
-			  AND C.InasisLicFchIni=I.InasisLicFchIni
-			  AND C.InasisLicFchFin=I.InasisLicFchFin
-		  	  AND SillaDependid=?
+        SELECT 1
+        FROM INASISLIC I
+        JOIN FUNCIONES_ASIGNADAS USING (FuncAsignadaId)
+        JOIN SILLAS USING (SillaId)
+        WHERE personalperid=perid
+          AND C.InasisLicFchIni=I.InasisLicFchIni
+          AND C.InasisLicFchFin=I.InasisLicFchFin
+          AND SillaDependid=A.dependid
 		  )
 		GROUP BY certid,C.InasisLicFecha,A.cedula,
              C.InasisLicFchIni,C.InasisLicFchFin,
              codlic,C.cargo,C.horas,observaciones
 		ORDER BY perdocid,C.InasisLicFchIni
 		`,
-		[data.Anio+'-'+data.Mes+'-01', data.Anio+'-'+data.Mes+'-31', data.DependId, data.Mes, data.DependId],
+		[data.Anio+'-'+data.Mes+'-01', data.Anio+'-'+data.Mes+'-31', data.DependId, data.Mes],
 		callback);
 	},
 };

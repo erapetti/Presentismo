@@ -22,7 +22,7 @@ module.exports = {
 		return Inasistencias.query(`
     SELECT perdocid,
       InasisLicTipo,
-      IF(inascauspres=3, SUM(ifnull(InasisLicId_Dias,1)-2), SUM(ifnull(InasisLicId_Dias,1))) inasistencias
+      IF(inascauspres=3, greatest(0,ifnull(max(InasisLicId_Dias),1)-2), ifnull(max(InasisLicId_Dias),1)) inasistencias
     FROM (
     	SELECT *
     	FROM Personal.INASISLIC
