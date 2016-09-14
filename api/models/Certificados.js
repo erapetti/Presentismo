@@ -61,8 +61,8 @@ module.exports = {
         JOIN FUNCIONES_ASIGNADAS USING (FuncAsignadaId)
         JOIN SILLAS USING (SillaId)
         WHERE personalperid=perid
-          AND C.InasisLicFchIni=I.InasisLicFchIni
-          AND C.InasisLicFchFin=I.InasisLicFchFin
+          AND I.InasisLicFchIni<=C.InasisLicFchIni
+          AND I.InasisLicFchFin>=C.InasisLicFchFin
           AND SillaDependid=A.dependid
 		  )
 		GROUP BY certid,C.InasisLicFecha,A.cedula,
