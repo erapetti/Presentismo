@@ -7,12 +7,12 @@
 
 module.exports = {
 
-        connection: 'Personal',
-        autoCreatedAt: false,
-        autoUpdatedAt: false,
-        autoPK: false,
-        migrate: 'safe',
-        tableName: 'certificaciones_anep',
+  connection: 'Personal',
+  autoCreatedAt: false,
+  autoUpdatedAt: false,
+  autoPK: false,
+  migrate: 'safe',
+  tableName: 'certificaciones_anep',
 	attributes: {
 		certid: 'integer',
 		InasisLicFecha: 'date',
