@@ -13,35 +13,25 @@
 </div>
 <% } -%>
 
-
 <table class="table">
 		<tr>
 			<th>Dependencia</th>
-			<th class="center"><%= infoMeses.mes1.nombre %></th>
-			<th class="center"><%= infoMeses.mes2.nombre %></th>
-			<th class="center"><%= infoMeses.mes3.nombre %></th>
+			<% for(m=3;m<12;m++) { -%>
+				<th class="center"><%= infoMeses.meses[m].nombre %></th>
+			<% } %>
 		</tr>
     <% depends.forEach (function(info) { -%>
     <tr>
 	    <td><%= info.dependdesc %></td>
-			<td class="center"><% if (typeof infoMeses.mes1[info.dependid] !== 'undefined') { %>
+			<% for(m=3;m<12;m++) { -%>
+			<td class="center"><% if (typeof infoMeses.meses[m].depend[info.dependid] !== 'undefined') { %>
 						<span class="glyphicon glyphicon-ok text-success"></span>
 					<% } else { %>
 						<span class="glyphicon glyphicon-remove text-danger"></span>
 					<% } %>
 			</td>
-	    <td class="center"><% if (typeof infoMeses.mes2[info.dependid] !== 'undefined') { %>
-						<span class="glyphicon glyphicon-ok text-success"></span>
-					<% } else { %>
-						<span class="glyphicon glyphicon-remove text-danger"></span>
-					<% } %>
-			</td>
-			<td class="center"><% if (typeof infoMeses.mes3[info.dependid] !== 'undefined') { %>
-						<span class="glyphicon glyphicon-ok text-success"></span>
-					<% } else { %>
-						<span class="glyphicon glyphicon-remove text-danger"></span>
-					<% } %>
-			</td>
+			<% } %>
+
 	<% }) -%>
 </table>
 

@@ -21,28 +21,23 @@
   <div class="panel-heading">Mes:</div>
 
   <div class="panel-body">
-    <div class="col-xs-4 center">
-	<ul class="nav nav-pills nav-justified">
-	  <li role="presentation"<% if (infoMeses.mes1.class) { %> class="<%= infoMeses.mes1.class %>"<% } %>><a<% if (!infoMeses.mes1.class) { %> href="?mes=1"<% } %>><%= infoMeses.mes1.nombre %></a></li>
-	</ul>
-	<p><% if (infoMeses.mes1.inhabilitado) {%>Aún no está habilitado<%} else { %><%= infoMeses.mes1.estado %>: <%= infoMeses.fecha_toString(infoMeses.mes1.fecha) %><%}%></p>
-	<% if (infoMeses.mes.id==1 && infoMeses.mes1.estado!="Presentado") {%><button type="submit" name="cerrar" value="1" class="btn btn-success">Cerrar el mes de <%= infoMeses.mes1.nombre %></button><% } %>
-    </div>
-    <div class="col-xs-4 center">
-	<ul class="nav nav-pills nav-justified">
-	  <li role="presentation"<% if (infoMeses.mes2.class) { %> class="<%= infoMeses.mes2.class %>"<% } %>><a<% if (!infoMeses.mes2.class) { %> href="?mes=2"<% } %>><%= infoMeses.mes2.nombre %></a></li>
-	</ul>
-	<p><% if (infoMeses.mes2.inhabilitado) {%>Aún no está habilitado<%} else { %><%= infoMeses.mes2.estado %>: <%= infoMeses.fecha_toString(infoMeses.mes2.fecha) %><%}%></p>
-	<% if (infoMeses.mes.id==2 && infoMeses.mes2.estado!="Presentado") {%><button type="submit" name="cerrar" value="2" class="btn btn-success">Cerrar el mes de <%= infoMeses.mes2.nombre %></button><% } %>
-    </div>
-    <div class="col-xs-4 center">
-	<ul class="nav nav-pills nav-justified">
-	  <li role="presentation"<% if (infoMeses.mes3.class) { %> class="<%= infoMeses.mes3.class %>"<% } %>><a<% if (!infoMeses.mes3.class) { %> href="?mes=3"<% } %>><%= infoMeses.mes3.nombre %></a></li>
-	</ul>
-	<p><% if (infoMeses.mes3.inhabilitado) {%>Aún no está habilitado<%} else { %><%= infoMeses.mes3.estado %>: <%= infoMeses.fecha_toString(infoMeses.mes3.fecha) %><%}%></p>
-	<% if (infoMeses.mes.id==3 && infoMeses.mes3.estado!="Presentado") {%><button type="submit" name="cerrar" value="3" class="btn btn-success">Cerrar el mes de <%= infoMeses.mes3.nombre %></button><% } %>
-    </div>
-  </div>
+		<% var m=3 -%>
+		<% for(row=1;row<4;row++) { -%>
+		<div class="row">
+			<% for (col=1;col<4;col++) { %>
+	    <div class="col-xs-4 center">
+				<ul class="nav nav-pills nav-justified">
+				  <li role="presentation" class="<%= (infoMeses.meses[m].inhabilitado ? "disabled" : infoMeses.mes.id==m ? "active" : infoMeses.meses[m].estado) %>">
+						<a<% if (!infoMeses.meses[m].inhabilitado) { %> href="?mes=<%= m %>"<% } %>><%= infoMeses.meses[m].nombre %></a>
+					</li>
+				</ul>
+				<p><% if (infoMeses.meses[m].inhabilitado) {%>Aún no está habilitado<%} else { %><%= infoMeses.meses[m].estado %>: <%= infoMeses.fecha_toString(infoMeses.meses[m].fecha) %><%}%></p>
+				<% if (infoMeses.mes.id==m && infoMeses.meses[m].estado!="Presentado") {%><button type="submit" name="cerrar" value="<%= m %>" class="btn btn-success">Cerrar el mes de <%= infoMeses.meses[m].nombre %></button><% } %>
+	    </div>
+			<% m++; } -%>
+	  </div>
+		<% } %>
+	</div>
 
 </div>
 </form>
@@ -84,7 +79,7 @@
                         <td><%= info.PerNombreCompleto %></td>
                         <td><%= infoMeses.fecha_toString(info.InasisLicFchIni) %></td>
                         <td><%= infoMeses.fecha_toString(info.InasisLicFchFin) %></td>
-                        <td><%= info.tipoLicencia %></td>
+                        <td><%= (typeof info.tipoLicencia==='string' ? info.tipoLicencia : '') %></td>
 		</tr>
 	<% }) -%>
 	</table>

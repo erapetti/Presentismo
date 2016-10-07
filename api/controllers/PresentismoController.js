@@ -22,15 +22,13 @@ module.exports = {
 		wsPortal.getSession(sessionid, function(err,session) {
 			if (sails.config.environment === "development") {
 				err = undefined;
-				session = {Sesionesid:1,Userid:'u19724241',Dependid:232,Lugarid:232};
+				session = {Sesionesid:1,Userid:'u19724241',Dependid:1614,Lugarid:1614};
 			}
 			if (err) {
 				return res.forbidden(err);
 				//err.status = 403;
 				//return res.negotiate(err);
 			}
-
-			var mesBase = 5;
 
 			var mes = parseInt(req.param('mes'));
 			var anio = 2016;
@@ -41,49 +39,29 @@ module.exports = {
 
 			var sprintf = require("sprintf");
 
-			var infoMeses = {mes1:Array(), mes2:Array(), mes3:Array(), mes:Array()};
-			infoMeses.mes1.nombre = meses[mesBase+1];
-			infoMeses.mes1.inhabilitado = mesBase+1>=mesActual;
-			infoMeses.mes1.fecha = new Date(anio+"-"+(mesBase+2)+"-09");
-			infoMeses.mes1.estado =  (now > infoMeses.mes1.fecha.getTime() ? "Vencido" : "Vencimiento");
-			infoMeses.mes1.class = (infoMeses.mes1.inhabilitado ? "disabled" : mes==1 ? "active" : undefined);
-
-			infoMeses.mes2.nombre = meses[mesBase+2];
-			infoMeses.mes2.inhabilitado = mesBase+2>=mesActual;
-			infoMeses.mes2.fecha = new Date(anio+"-"+(mesBase+3)+"-09");
-			infoMeses.mes2.estado = (now > infoMeses.mes2.fecha.getTime() ? "Vencido" : "Vencimiento");
-			infoMeses.mes2.class = (infoMeses.mes2.inhabilitado ? "disabled" : mes==2 ? "active" : undefined);
-
-			infoMeses.mes3.nombre = meses[mesBase+3];
-			infoMeses.mes3.inhabilitado = mesBase+3>=mesActual;
-			infoMeses.mes3.fecha = new Date(anio+"-"+(mesBase+4)+"-09");
-			infoMeses.mes3.estado = (now > infoMeses.mes3.fecha.getTime() ? "Vencido" : "Vencimiento");
-			infoMeses.mes3.class = (infoMeses.mes3.inhabilitado ? "disabled" : mes==3 ? "active" : undefined);
-
+			var infoMeses = {meses:Array(), mes:{}};
+			for (var m=3;m<12;m++) {
+				infoMeses.meses[m] = {
+					nombre: meses[m],
+					inhabilitado: (m >= mesActual || m<6),
+					fecha: new Date(anio+"-"+(m+1)+"-09")
+				};
+				infoMeses.meses[m].estado = (now > infoMeses.meses[m].fecha.getTime() ? "Vencido" : "Vencimiento");
+			}
 			infoMeses.fecha_toString = function(d) {return sprintf("%02d/%02d/%04d", d.getDate(),d.getMonth()+1,d.getFullYear())};
-
-
 
 			Presentismo.find({anio:anio, DependId:session.Dependid}).exec(function(err, presentismo) {
 				if (err) {
 					return res.serverError(err);
 				}
 				presentismo.forEach (function(info){
-					if (info.mes == 1+mesBase) {
-						infoMeses.mes1.fecha = info.updatedAt;
-						infoMeses.mes1.estado = "Presentado";
-					} else if (info.mes == 2+mesBase) {
-						infoMeses.mes2.fecha = info.updatedAt;
-						infoMeses.mes2.estado = "Presentado";
-					} else if (info.mes == 3+mesBase) {
-						infoMeses.mes3.fecha = info.updatedAt;
-						infoMeses.mes3.estado = "Presentado";
-					}
+					infoMeses.meses[info.mes].fecha = info.updatedAt;
+					infoMeses.meses[info.mes].estado = "Presentado";
 				});
 
 				var cerrar = parseInt(req.param('cerrar'));
 				if (cerrar) {
-					Presentismo.create({anio:anio, mes:cerrar+mesBase, DependId:session.Dependid, userid:session.Userid}).exec(function(err,data) {
+					Presentismo.create({anio:anio, mes:cerrar, DependId:session.Dependid, userid:session.Userid}).exec(function(err,data) {
 						var mensaje;
 
 						if (err) {
@@ -103,8 +81,7 @@ module.exports = {
 					return res.view({infoMeses:infoMeses, DependId:session.Dependid, presentismo:presentismo, certificados:undefined});
 				}
 
-				mes+=mesBase;
-				infoMeses.mes.id = mes-mesBase;
+				infoMeses.mes.id = mes;
 				infoMeses.mes.nombre = meses[mes];
 
 				// obtengo todas las inasistencias de la dependencia:
@@ -162,7 +139,6 @@ module.exports = {
 				//return res.negotiate(err);
 			}
 
-			var mesBase = 5;
 			var meses = ['','enero','febrero','marzo','abril','mayo','junio',
 						 'julio','agosto','setiembre','octubre','noviembre','diciembre'];
 			var mes = parseInt(req.param('mes'));
@@ -175,44 +151,23 @@ module.exports = {
 					return res.serverError(err);
 				}
 
-				var infoMeses = {mes1:Array(), mes2:Array(), mes3:Array()};
-				infoMeses.mes1.nombre = meses[mesBase+1];
-				infoMeses.mes2.nombre = meses[mesBase+3];
-				infoMeses.mes3.nombre = meses[mesBase+3];
+				var infoMeses = {meses:Array()};
+				for (var m=3;m<12;m++) {
+					infoMeses.meses[m] = { nombre: meses[m], depend:Array() };
+				}
 				infoMeses.fecha_toString = function(d) {return sprintf("%02d/%02d/%04d", d.getDate(),d.getMonth()+1,d.getFullYear())};
 
-				//Presentismo.find({anio:anio, mes:mesBase+1, DependId:depends.map(function(i){ return i.dependid })}).exec(function(err, presentismo)
 				var arrDepends = depends.map(function(i){ return i.dependid });
-				Presentismo.find({anio:anio, mes:mesBase+1, DependId:arrDepends}).exec(function(err, presentismo) {
+				Presentismo.find({DependId:arrDepends, anio:anio}).exec(function(err, presentismo) {
 					if (err) {
 						return res.serverError(err);
 					}
 
 					presentismo.forEach (function(info){
-						infoMeses.mes1[info.DependId] = info.updatedAt;
+						infoMeses.meses[info.mes].depend[info.DependId] = info.updatedAt;
 					});
 
-					Presentismo.find({anio:anio, mes:mesBase+2, DependId:arrDepends}).exec(function(err, presentismo) {
-						if (err) {
-							return res.serverError(err);
-						}
-
-						presentismo.forEach (function(info){
-							infoMeses.mes2[info.DependId] = info.updatedAt;
-						});
-
-						Presentismo.find({anio:anio, mes:mesBase+3, DependId:arrDepends}).exec(function(err, presentismo) {
-							if (err) {
-								return res.serverError(err);
-							}
-
-							presentismo.forEach (function(info){
-								infoMeses.mes3[info.DependId] = info.updatedAt;
-							});
-
-							res.view({depends:depends, infoMeses:infoMeses})
-						});
-					});
+					res.view({depends:depends, infoMeses:infoMeses})
 				});
 			});
 		});
