@@ -55,6 +55,7 @@ module.exports = {
 		  AND A.dependid=?
 		  AND A.mes=?
 		  AND A.tipo<>1
+      AND A.activo='S'
 		  AND NOT EXISTS (
         SELECT 1
         FROM INASISLIC I
