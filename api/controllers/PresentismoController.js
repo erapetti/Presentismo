@@ -22,7 +22,7 @@ module.exports = {
 		wsPortal.getSession(sessionid, function(err,session) {
 			if (sails.config.environment === "development") {
 				err = undefined;
-				session = {Sesionesid:1,Userid:'u19724241',Dependid:1614,Lugarid:1614};
+				session = {Sesionesid:1,Userid:'u19724241',Dependid:1068,Lugarid:1068};
 			}
 			if (err) {
 				return res.forbidden(err);
@@ -95,6 +95,8 @@ module.exports = {
 					inasistencias.forEach(function(info) {
 						if (!arrInasistencias[info.perdocid]) {
 							arrInasistencias[info.perdocid] = Array();
+						}
+						if (typeof arrInasistencias[info.perdocid][info.InasisLicTipo]==='undefined') {
 							arrInasistencias[info.perdocid][info.InasisLicTipo] = 0;
 						}
 						arrInasistencias[info.perdocid][info.InasisLicTipo] += info.inasistencias;
