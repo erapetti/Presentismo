@@ -31,11 +31,15 @@ module.exports = {
 			}
 
 			var mes = parseInt(req.param('mes'));
-			var anio = 2016;
 
 			var d = new Date();
 			var now = d.getTime();
 			var mesActual = d.getMonth()+1;
+
+			var anio = d.getFullYear();
+			if (mesActual < 3) {
+				anio = anio - 1;
+			}
 
 			var sprintf = require("sprintf");
 
@@ -43,8 +47,8 @@ module.exports = {
 			for (var m=3;m<12;m++) {
 				infoMeses.meses[m] = {
 					nombre: meses[m],
-					inhabilitado: (m >= mesActual || m<6),
-					fecha: new Date(anio+"-"+(m+1)+(m==9 ? "-15" : "-09")+" GMT-0300")
+					inhabilitado: (m >= mesActual),
+					fecha: new Date(anio+"-"+(m+1)+"-09 GMT-0300")
 				};
 				infoMeses.meses[m].estado = (now > infoMeses.meses[m].fecha.getTime() ? "Vencido" : "Vencimiento");
 			}
@@ -144,7 +148,13 @@ module.exports = {
 			var meses = ['','enero','febrero','marzo','abril','mayo','junio',
 						 'julio','agosto','setiembre','octubre','noviembre','diciembre'];
 			var mes = parseInt(req.param('mes'));
-			var anio = 2016;
+
+			var d = new Date();
+			var mesActual = d.getMonth()+1;
+			var anio = d.getFullYear();
+			if (mesActual < 3) {
+				anio = anio - 1;
+			}
 
 			var sprintf = require("sprintf");
 
