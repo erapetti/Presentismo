@@ -1,6 +1,6 @@
 <div id="heading" class="jumbotron">
 <h1>Cierre mensual de presentismo</h1>
-<p>Todos los liceos deben informar mensualmente que han ingresado en el sistema todas las inasistencias de los docentes para que se pueda realizar el cálculo de la compensación por presentismo.</p>
+<p>Todos los liceos deben informar mensualmente que han ingresado en el sistema todas las inasistencias del personal para que se pueda realizar el cálculo de la compensación por presentismo.</p>
 <p>Los liceos que no realicen el cierre mensual no estarán incluidos en el pago de presentismo.</p>
 <p>Todos los períodos de licencia certificada deben estar ingresados en el corporativo.</p>
 </div>
@@ -51,18 +51,18 @@
 <h2>Contenido:</h2>
 <ul>
 	<% if (Object.keys(certificados).length>0) { -%>
-	<li><a href="#certificados">Docentes con licencias certificadas que no están ingresadas al corporativo</a></li>
+	<li><a href="#certificados">Personal con licencias certificadas que no están ingresadas al corporativo</a></li>
 	<% } -%>
-	<li><a href="#cobran">Docentes que cobran presentismo</a></li>
-	<li><a href="#nocobran">Docentes que no cobran presentismo</a></li>
-	<li><a href="#inactivos">Docentes inactivos</a></li>
+	<li><a href="#cobran">Personal que cobra presentismo</a></li>
+	<li><a href="#nocobran">Personal que no cobra presentismo</a></li>
+	<li><a href="#inactivos">Personal inactivo</a></li>
 </ul>
 </div>
 
 <%	if (Object.keys(certificados).length>0) { -%>
 <a id="certificados" name="certificados"></a>
 <div class="panel panel-default">
-  <div class="panel-heading bg-danger">Docentes con licencias certificadas que no están ingresadas al corporativo:</div>
+  <div class="panel-heading bg-danger">Personal con licencias certificadas que no están ingresadas al corporativo:</div>
 
   <div class="panel-body bg-danger">
         <table class="table">

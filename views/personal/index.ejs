@@ -1,13 +1,13 @@
 <a id="cobran" name="cobran"></a>
 <div class="panel panel-default">
-  <div class="panel-heading">Docentes del liceo que deberían cobrar presentismo:</div>
+  <div class="panel-heading">Personal del liceo que debería cobrar presentismo:</div>
 
-  <% hayDocentes=0 %>
+  <% hayPersonal=0 %>
   <div class="panel-body">
 	<table class="table">
 	<% personalLiceo.forEach (function(info) { -%>
-		<% if (info.tipo != 1 && info.activo=="S" && (!arrInasistencias[ info.cedula ] || !arrInasistencias[ info.cedula ][ info.TipoCargo() ] || arrInasistencias[ info.cedula ][ info.TipoCargo() ]<2)) {
-		   hayDocentes=1 %>
+		<% if (info.activo=="S" && (!arrInasistencias[ info.cedula ] || !arrInasistencias[ info.cedula ][ info.TipoCargo() ] || arrInasistencias[ info.cedula ][ info.TipoCargo() ]<2)) {
+		   hayPersonal=1 %>
 		<tr>
 			<td><%= info.cedula %></td>
 			<td><%= info.PerNombreCompleto %></td>
@@ -21,8 +21,8 @@
 		</tr>
 		<% }
 	   });
-	   if (!hayDocentes) { %>
-		<tr><td>No hay docentes que cumplan este criterio</td></tr>
+	   if (!hayPersonal) { %>
+		<tr><td>No hay personal que cumpla este criterio</td></tr>
 	<% } %>
 	</table>
   </div>
@@ -30,14 +30,14 @@
 
 <a id="nocobran" name="nocobran"></a>
 <div class="panel panel-default">
-  <div class="panel-heading">Docentes del liceo con más de 2 inasistencias (no cobran la compensación por presentismo de este mes):</div>
+  <div class="panel-heading">Personal del liceo con más de 2 inasistencias (no cobran la compensación por presentismo de este mes):</div>
 
-  <% hayDocentes=0 %>
+  <% hayPersonal=0 %>
   <div class="panel-body">
 	<table class="table">
 	<% personalLiceo.forEach (function(info) { -%>
-		<% if (info.tipo != 1 && info.activo=="S" && arrInasistencias[ info.cedula ] && arrInasistencias[ info.cedula ][ info.TipoCargo() ] && arrInasistencias[ info.cedula ][ info.TipoCargo() ]>=2) {
-		   hayDocentes=1 %>
+		<% if (info.activo=="S" && arrInasistencias[ info.cedula ] && arrInasistencias[ info.cedula ][ info.TipoCargo() ] && arrInasistencias[ info.cedula ][ info.TipoCargo() ]>=2) {
+		   hayPersonal=1 %>
 		<tr>
 			<td><%= info.cedula %></td>
 			<td><%= info.PerNombreCompleto %></td>
@@ -51,8 +51,8 @@
 		</tr>
 		<% }
 	   });
-	   if (!hayDocentes) { %>
-		<tr><td>No hay docentes que cumplan este criterio</td></tr>
+	   if (!hayPersonal) { %>
+		<tr><td>No hay personal que cumpla este criterio</td></tr>
 	<% } %>
 	</table>
   </div>
@@ -60,14 +60,14 @@
 
 <a id="inactivos" name="inactivos"></a>
 <div class="panel panel-default">
-  <div class="panel-heading">Docentes del liceo que no completaron el mes de actividad (no cobran la compensación por presentismo de este mes):</div>
+  <div class="panel-heading">Personal del liceo que no completó el mes de actividad (no cobran la compensación por presentismo de este mes):</div>
 
-  <% hayDocentes=0 %>
+  <% hayPersonal=0 %>
   <div class="panel-body">
 	<table class="table">
 	<% personalLiceo.forEach (function(info) { -%>
-		<% if (info.tipo != 1 && info.activo!="S") {
-		   hayDocentes=1 %>
+		<% if (info.activo!="S") {
+		   hayPersonal=1 %>
 		<tr>
 			<td><%= info.cedula %></td>
 			<td><%= info.PerNombreCompleto %></td>
@@ -77,10 +77,9 @@
 		</tr>
 		<% }
 	   });
-	   if (!hayDocentes) { %>
-		<tr><td>No hay docentes que cumplan este criterio</td></tr>
+	   if (!hayPersonal) { %>
+		<tr><td>No hay personal que cumpla este criterio</td></tr>
 	<% } %>
 	</table>
   </div>
 </div>
-

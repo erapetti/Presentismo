@@ -1,6 +1,7 @@
 <div id="heading" class="jumbotron">
 <h1>Cierres pendientes para presentismo</h1>
-<p>En el listado de los cierres mensuales para presentismo se incluye el estado del cierre para cada dependencia a la cual tiene acceso.</p>
+<p>Este listado resume el estado de los cierres mensuales para presentismo de cada dependencia a la cual tiene acceso.</p>
+<p>Las cruces rojas indican que no se ha enviado el cierre para la dependencia y mes asociado.</p>
 </div>
 
 <div id="content">
@@ -17,7 +18,7 @@
 		<tr>
 			<th>Dependencia</th>
 			<% for(m=3;m<12;m++) { -%>
-				<th class="center"><%= infoMeses.meses[m].nombre %></th>
+				<th class="center" width="70px"><%= infoMeses.meses[m].nombre %></th>
 			<% } %>
 		</tr>
     <% depends.forEach (function(info) { -%>
