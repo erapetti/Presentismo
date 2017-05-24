@@ -21,9 +21,9 @@ div#heading_multas { padding:2em;margin:1em 0;background-color:transparent;overf
 div#heading_multas h1::before { background-image:url(../images/background_multas.jpg);background-size:cover;content:"";position:absolute;left:0;top:0;z-index:-1;opacity:0.3;width:100%;height:100%;display:block }
 div#heading_multas h1, div#heading p { background-color:rgba(255,255,255,0.5) }
 div#content div#multas .panel-default > .panel-heading { background:linear-gradient(to bottom,rgb(52,183,52) 0px,rgb(11,40,11) 100%); color:#fff }
-div#content .panel-default { border-color:rgb(52,183,52) }
+div#content div#multas .panel-default { border-color:rgb(52,183,52) }
 div#content div#multas .nav-pills > li > a { border:1px solid rgb(52,183,52);margin:5px }
-div#multas a {color:rgb(52,183,52)}
+div#content div#multas a {color:rgb(52,183,52)}
 div#content div#multas li.Vencido a { color:red }
 div#content div#multas li.Presentado a { color:green }
 div#content div#multas li.disabled a { color:grey }
