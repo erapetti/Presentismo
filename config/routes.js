@@ -55,6 +55,15 @@ module.exports.routes = {
       action: 'pendientes'
   },
 
+  '/multas': {
+      controller: 'presentismo',
+      action: 'multas'
+  },
+  '//multas': {
+      controller: 'presentismo',
+      action: 'multas'
+  },
+
   '/node/presentismo/*': function(req, res) {
 	res.redirect(req.path.replace('/node/presentismo',''));
   },

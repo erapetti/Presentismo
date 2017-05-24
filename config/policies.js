@@ -31,6 +31,7 @@ module.exports.policies = {
   PresentismoController: {
 	index: true,
   pendientes: true,
+  multas: true,
   },
 
   /***************************************************************************

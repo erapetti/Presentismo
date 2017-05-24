@@ -1,0 +1,169 @@
+<div id="heading_multas" class="jumbotron">
+<h1>Cierre mensual de multas</h1>
+<p>Todos los liceos deben informar mensualmente que han ingresado en el sistema todas las inasistencias del personal para que se pueda realizar el cálculo de multas.</p>
+<p>Todos los períodos de licencia certificada deben estar ingresados en el corporativo.</p>
+</div>
+
+<div id="content">
+
+<div id="multas">
+
+<% if (typeof mensaje !== 'undefined') { -%>
+<div class="alert alert-danger">
+	<strong>ERROR:</strong> <%= mensaje %>
+</div>
+<% } -%>
+
+<form method="post">
+<input type="hidden" name="dependid" value="<%= DependId %>">
+<div class="panel panel-default">
+  <div class="panel-heading">Mes:</div>
+
+  <div class="panel-body">
+		<% var m=3 -%>
+		<% for(row=1;row<4;row++) { -%>
+		<div class="row">
+			<% for (col=1;col<4;col++) { %>
+	    <div class="col-xs-4 center">
+				<ul class="nav nav-pills nav-justified">
+				  <li role="presentation" class="<%= (infoMeses.meses[m].inhabilitado ? "disabled" : infoMeses.mes.id==m ? "active" : infoMeses.meses[m].estado) %>">
+						<a<% if (!infoMeses.meses[m].inhabilitado) { %> href="?mes=<%= m %>"<% } %>><%= infoMeses.meses[m].nombre %></a>
+					</li>
+				</ul>
+				<p><% if (infoMeses.meses[m].inhabilitado) {%>Aún no está habilitado<%} else { %><%= infoMeses.meses[m].estado %>: <%= infoMeses.fecha_toString(infoMeses.meses[m].fecha) %><%}%></p>
+				<% if (infoMeses.mes.id==m && infoMeses.meses[m].estado!="Presentado") { -%>
+					<button type="submit" name="cerrar" value="<%= m %>" class="btn btn-success">Cerrar el mes de <%= infoMeses.meses[m].nombre %></button>
+				<% } else if (infoMeses.mes.id==m && infoMeses.meses[m].estado=="Presentado") { -%>
+					<button type="submit" name="cerrar" value="<%= m %>" class="btn btn-success">Volver a cerrar el mes de <%= infoMeses.meses[m].nombre %></button>
+				<% } %>
+	    </div>
+			<% m++; } -%>
+	  </div>
+		<% } %>
+	</div>
+
+</div>
+</form>
+
+<p>Ver cierres pendientes: <a href="<% if (sails.config.environment != 'development') { %>/node/presentismo/<% } %>multas_pendientes"><span class="glyphicon glyphicon-eye-open"></span></a></p>
+
+<% if (infoMeses.mes.id) { -%>
+
+
+<div id="indice">
+<h2>Contenido:</h2>
+<ul>
+	<% if (Object.keys(certificados).length>0) { -%>
+	<li><a href="#certificados">Personal con licencias certificadas que no están ingresadas al corporativo</a></li>
+	<% } -%>
+	<li><a href="#sinmultas">Personal sin multas</a></li>
+	<li><a href="#conmultas">Personal con multas</a></li>
+</ul>
+</div>
+
+<%	if (Object.keys(certificados).length>0) { -%>
+<a id="certificados" name="certificados"></a>
+<div class="panel panel-default">
+  <div class="panel-heading bg-danger">Personal con licencias certificadas que no están ingresadas al corporativo:</div>
+
+  <div class="panel-body bg-danger">
+        <table class="table">
+		<tr>
+			<th>Cédula</th>
+			<th>Nombre</th>
+			<th>Desde</th>
+			<th>Hasta</th>
+			<th>Causal</th>
+		</tr>
+        <% certificados.forEach (function(info) { -%>
+                <tr>
+                        <td><%= info.cedula %></td>
+                        <td><%= info.PerNombreCompleto %></td>
+                        <td><%= infoMeses.fecha_toString(info.InasisLicFchIni) %></td>
+                        <td><%= infoMeses.fecha_toString(info.InasisLicFchFin) %></td>
+                        <td><%= (typeof info.tipoLicencia==='string' ? info.tipoLicencia : '') %></td>
+		</tr>
+	<% }) -%>
+	</table>
+  </div>
+</div>
+<%	 } -%>
+
+<a id="sinmultas" name="sinmultas"></a>
+<div class="panel panel-default">
+  <div class="panel-heading">Personal del liceo que no tiene multas por inasistencias:</div>
+
+  <% hayPersonal=0 %>
+  <div class="panel-body">
+	<table class="table">
+	<% personalLiceo.forEach (function(info) { -%>
+		<% if ((!arrInasistencias[ info.cedula ] || !arrInasistencias[ info.cedula ][ info.TipoCargo() ] || arrInasistencias[ info.cedula ][ info.TipoCargo() ].total == 0)) {
+		   hayPersonal=1 -%>
+		<tr>
+			<td><%= info.cedula %></td>
+			<td><%= info.PerNombreCompleto %></td>
+			<td><%= info.horas %> horas</td>
+			<td><%= info.cargo %></td>
+			<td>SIN FALTAS</td>
+		</tr>
+		<% }
+	   });
+	   if (!hayPersonal) { %>
+		<tr><td>No hay personal que cumpla este criterio</td></tr>
+	<% } %>
+	</table>
+  </div>
+</div>
+
+<a id="conmultas" name="conmultas"></a>
+<div class="panel panel-default">
+  <div class="panel-heading">Personal del liceo con multas por inasistencias este mes:</div>
+
+  <% hayPersonal=0 %>
+  <div class="panel-body">
+	<table class="table">
+	<% personalLiceo.forEach (function(info) { -%>
+		<% if (arrInasistencias[ info.cedula ] && arrInasistencias[ info.cedula ][ info.TipoCargo() ] && arrInasistencias[ info.cedula ][ info.TipoCargo() ].total > 0) {
+		   hayPersonal=1 %>
+		<tr>
+			<td><%= info.cedula %></td>
+			<td><%= info.PerNombreCompleto %></td>
+			<td><%= info.horas %> horas</td>
+			<td><%= info.cargo %></td>
+			<td><% if(arrInasistencias[ info.cedula ] && arrInasistencias[ info.cedula ][ info.TipoCargo() ]) { -%>
+						<% dias = arrInasistencias[ info.cedula ][ info.TipoCargo() ].dias -%>
+						<% horas = arrInasistencias[ info.cedula ][ info.TipoCargo() ].horas -%>
+						<% dias_semana = trabaja_sabado ? 6 : 5 -%>
+					  -
+						<% if (dias > 0) { -%>
+							<%= dias %> día<% if (dias>1) { %>s<% } %>
+							<% if (horas > 0) { -%>
+								y
+							<% } %>
+						<% } %>
+						<% if (dias == 0 || horas > 0) { -%>
+							<%= horas %> hora<% if (horas>1) { %>s<% } %>
+						<% } %>
+						<% if (dias > 0 && info.tipo != 2) { -%>
+							= - <%= Math.floor(dias * (info.horas/dias_semana)) + horas %> horas
+						<% } else if (horas > 0 && info.tipo == 2) { -%>
+							= - <%= Math.floor(horas / (info.horas/dias_semana)) + días %> días
+						<% } %>
+					<% } else { -%>
+						0
+					<% } %></td>
+		</tr>
+		<% }
+	   });
+	   if (!hayPersonal) { %>
+		<tr><td>No hay personal que cumpla este criterio</td></tr>
+	<% } %>
+	</table>
+  </div>
+</div>
+
+<% } %>
+
+</div>
+
+</div>

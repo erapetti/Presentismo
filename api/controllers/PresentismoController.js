@@ -22,7 +22,7 @@ module.exports = {
 		wsPortal.getSession(sessionid, function(err,session) {
 			if (sails.config.environment === "development") {
 				err = undefined;
-				session = {Sesionesid:1,Userid:'u19724241',Dependid:1068,Lugarid:1068};
+				session = {Sesionesid:1,Userid:'u19724241',Dependid:201,Lugarid:201};
 			}
 			if (err) {
 				return res.forbidden(err);
@@ -73,7 +73,6 @@ module.exports = {
 							mensaje = "No se pudo cerrar el mes por un error al acceder a la base de datos";
 							return res.view({infoMeses:infoMeses, DependId:session.Dependid, presentismo:presentismo,  mensaje:mensaje, certificados:undefined});
 						} else {
-							sails.log("data="+data);
 							sails.log("Cierre de mes="+cerrar+" dependid="+session.Dependid);
 							return res.redirect(sails.config.environment==='development' ? '' : '/node/presentismo');
 						}
@@ -179,7 +178,136 @@ module.exports = {
 						infoMeses.meses[info.mes].depend[info.DependId] = info.updatedAt;
 					});
 
-					res.view({depends:depends, infoMeses:infoMeses})
+					return res.view({depends:depends, infoMeses:infoMeses})
+				});
+			});
+		});
+	},
+
+	multas: function (req, res) {
+
+		var sessionid;
+		if (sails.config.environment === "development") {
+			sessionid = '9728448076454730240';
+		} else {
+			sessionid = req.cookies.SESION;
+		}
+		wsPortal.getSession(sessionid, function(err,session) {
+			if (sails.config.environment === "development") {
+				err = undefined;
+				session = {Sesionesid:1,Userid:'u19724241',Dependid:264,Lugarid:264};
+			}
+			if (err) {
+				return res.forbidden(err);
+			}
+
+			var mes = parseInt(req.param('mes'));
+
+			var d = new Date();
+			var now = d.getTime();
+			var mesActual = d.getMonth()+1;
+
+			var anio = d.getFullYear();
+
+			var sprintf = require("sprintf");
+
+			var infoMeses = {meses:Array(), mes:{}};
+			for (var m=3;m<12;m++) {
+				infoMeses.meses[m] = {
+					nombre: meses[m],
+					inhabilitado: (m >= mesActual),
+					fecha: new Date(anio+"-"+(m+1)+"-09 GMT-0300")
+				};
+				infoMeses.meses[m].estado = (now > infoMeses.meses[m].fecha.getTime() ? "Vencido" : "Vencimiento");
+			}
+			infoMeses.fecha_toString = function(d) {return sprintf("%02d/%02d/%04d", d.getDate(),d.getMonth()+1,d.getFullYear())};
+
+			Multas.find({anio:anio, DependId:session.Dependid}).exec(function(err, multas) {
+				if (err) {
+					return res.serverError(err);
+				}
+				multas.forEach (function(info){
+					infoMeses.meses[info.mes].fecha = info.updatedAt;
+					infoMeses.meses[info.mes].estado = "Presentado";
+				});
+
+				var cerrar = parseInt(req.param('cerrar'));
+				if (cerrar) {
+					Multas.create({anio:anio, mes:cerrar, DependId:session.Dependid, userid:session.Userid}).exec(function(err,data) {
+						var mensaje;
+
+						if (err) {
+
+							Multas.update({anio:anio, mes:cerrar, DependId:session.Dependid, userid:session.Userid},{}).exec(function(err,data) {
+
+								if (err) {
+									sails.log("error="+err);
+									mensaje = "No se pudo cerrar el mes por un error al acceder a la base de datos";
+									return res.view({infoMeses:infoMeses, DependId:session.Dependid, mensaje:mensaje, certificados:undefined});
+								} else {
+									sails.log("data="+data);
+									sails.log("Cierre por update de mes="+cerrar+" dependid="+session.Dependid);
+									return res.redirect(sails.config.environment==='development' ? 'multas' : '/node/presentismo/multas');
+								}
+							});
+
+						} else {
+							sails.log("Cierre de mes="+cerrar+" dependid="+session.Dependid);
+							return res.redirect(sails.config.environment==='development' ? 'multas' : '/node/presentismo/multas');
+						}
+					});
+					return;
+				}
+
+				if (!mes) {
+					return res.view({infoMeses:infoMeses, DependId:session.Dependid, certificados:undefined});
+				}
+
+				infoMeses.mes.id = mes;
+				infoMeses.mes.nombre = meses[mes];
+
+				// obtengo todas las inasistencias de la dependencia:
+				Inasistencias.get_multas({DependId:session.Dependid,Anio:anio,Mes:mes}, function(err, inasistencias) {
+					if (err) {
+						return res.serverError(err);
+					}
+
+					// transformo las inasistencias en un array
+					var arrInasistencias = Array();
+					inasistencias.forEach(function(info) {
+						if (!arrInasistencias[info.perdocid]) {
+							arrInasistencias[info.perdocid] = Array();
+						}
+						if (typeof arrInasistencias[info.perdocid][info.InasisLicTipo]==='undefined') {
+							arrInasistencias[info.perdocid][info.InasisLicTipo] = {horas:0, dias:0, total:0};
+						}
+						arrInasistencias[info.perdocid][info.InasisLicTipo].horas += info.horas;
+						arrInasistencias[info.perdocid][info.InasisLicTipo].dias  += info.dias;
+						arrInasistencias[info.perdocid][info.InasisLicTipo].total += info.inasistencias;
+					});
+
+					// obtengo los certificados que faltan en la dependencia
+					Certificados.get({DependId:session.Dependid,Anio:anio,Mes:mes}, function(err, certificados) {
+						if (err) {
+							return res.serverError(err);
+						}
+
+						// obtengo las personas de la dependencia:
+						Personal.find({Anio:anio,Mes:mes,DependId:session.Dependid}).sort('PerNombreCompleto ASC').exec(function(err, personalLiceo) {
+							if (err) {
+								return res.serverError(err);
+							}
+
+							// averiguo si este liceo trabaja los sábados:
+							Estudiantil.liceo_sabado({DependId:session.Dependid,Anio:anio,Mes:mes},function(err,trabaja_sabado){
+								if (err) {
+									return res.serverError(err);
+								}
+
+								return res.view({arrInasistencias:arrInasistencias, personalLiceo:personalLiceo, infoMeses:infoMeses, DependId:session.Dependid, certificados:certificados, trabaja_sabado:trabaja_sabado});
+							});
+						});
+					});
 				});
 			});
 		});
