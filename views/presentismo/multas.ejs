@@ -149,7 +149,7 @@
 						<% if (dias > 0 && info.tipo != 2) { -%>
 							= - <%= Math.floor(dias * (info.horas/dias_semana)) + horas %> horas
 						<% } else if (horas > 0 && info.tipo == 2) { -%>
-							= - <%= Math.floor(horas / (info.horas/dias_semana)) + días %> días
+							= - <%= Math.floor(horas / (info.horas/dias_semana)) + dias %> días
 						<% } %>
 					<% } else { -%>
 						0
