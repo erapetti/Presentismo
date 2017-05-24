@@ -6,6 +6,10 @@ module.exports = {
 		// recibe string con el número de sesión
 		// llama a callback con parámetros err y {Sesionesid,Userid,Dependid,Lugarid}
 
+		if (typeof sessionId === 'undefined') {
+			return callback(new Error("Sesión no válida. Reinicie su conexión con el portal de servicios"),undefined);
+		}
+		
 		// saco espacios y/o signos de más que pueden venir al inicio o al final de sesionId
 		sesionId = sesionId.replace(/^[+ ]*/, '').replace(/[+ ]*$/, '');
 
