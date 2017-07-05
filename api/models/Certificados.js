@@ -53,6 +53,7 @@ module.exports = {
 		  AND C.InasisLicFchFin>=?
 		  AND C.InasisLicFchIni<=?
 		  AND A.dependid=?
+		  AND A.anio=?
 		  AND A.mes=?
 		  AND A.tipo<>1
       AND A.activo='S'
@@ -71,7 +72,7 @@ module.exports = {
              codlic,C.cargo,C.horas,observaciones
 		ORDER BY perdocid,C.InasisLicFchIni
 		`,
-		[data.Anio+'-'+data.Mes+'-01', data.Anio+'-'+data.Mes+'-31', data.DependId, data.Mes],
+		[data.Anio+'-'+data.Mes+'-01', data.Anio+'-'+data.Mes+'-31', data.DependId, data.Anio, data.Mes],
 		callback);
 	},
 };
