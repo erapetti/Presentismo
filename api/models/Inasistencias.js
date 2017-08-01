@@ -63,6 +63,7 @@ module.exports = {
     JOIN Personas.PERSONASDOCUMENTOS ON personalperid=perid and paiscod="UY" and doccod="CI"
     LEFT JOIN INASISLIC_LICENCIA_DIAS ID on ID.InasisLicId=I.InasisLicId and ID.PersonalPerId=I.PersonalPerId and ID.InasisLicId_Mes=?
     WHERE InasCausDescuento<>0
+      AND InasCausTipo='I'
     GROUP BY perdocid,InasisLicTipo,InasisLicFchIni,InasisLicFchFin`
       ,
       [data.DependId, data.Anio+'-'+data.Mes+'-01', data.Anio+'-'+data.Mes+'-31', data.Mes],

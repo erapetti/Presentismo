@@ -1,7 +1,7 @@
 <div id="heading_multas" class="jumbotron">
 <h1>Cierre mensual de multas</h1>
 <p>Todos los liceos deben informar mensualmente que han ingresado en el sistema todas las inasistencias del personal para que se pueda realizar el cálculo de multas.</p>
-<p>Todos los períodos de licencia certificada deben estar ingresados en el corporativo.</p>
+<p>Todos los períodos de licencia certificada que correspondan deben estar ingresados en el corporativo.</p>
 </div>
 
 <div id="content">
@@ -20,17 +20,17 @@
   <div class="panel-heading">Mes:</div>
 
   <div class="panel-body">
-		<% var m=3 -%>
-		<% for(row=1;row<4;row++) { -%>
+		<% var m=1 -%>
+		<% for(row=1;row<=4;row++) { -%>
 		<div class="row">
-			<% for (col=1;col<4;col++) { %>
+			<% for (col=1;col<=3;col++) { %>
 	    <div class="col-xs-4 center">
 				<ul class="nav nav-pills nav-justified">
 				  <li role="presentation" class="<%= (infoMeses.meses[m].inhabilitado ? "disabled" : infoMeses.mes.id==m ? "active" : infoMeses.meses[m].estado) %>">
 						<a<% if (!infoMeses.meses[m].inhabilitado) { %> href="<% if (sails.config.environment != 'development') { %>/node/presentismo/multas<% } %>?mes=<%= m %>"<% } %>><%= infoMeses.meses[m].nombre %></a>
 					</li>
 				</ul>
-				<p><% if (infoMeses.meses[m].inhabilitado) {%>Aún no está habilitado<%} else { %><%= infoMeses.meses[m].estado %>: <%= infoMeses.fecha_toString(infoMeses.meses[m].fecha) %><%}%></p>
+				<p><%if (m < 7) {%>Informar por SECLI<%} else if (infoMeses.meses[m].inhabilitado) {%>Aún no está habilitado<%} else { %><%= infoMeses.meses[m].estado %>: <%= infoMeses.fecha_toString(infoMeses.meses[m].fecha) %><%}%></p>
 				<% if (infoMeses.mes.id==m && infoMeses.meses[m].estado!="Presentado") { -%>
 					<button type="submit" name="cerrar" value="<%= m %>" class="btn btn-success">Cerrar el mes de <%= infoMeses.meses[m].nombre %></button>
 				<% } else if (infoMeses.mes.id==m && infoMeses.meses[m].estado=="Presentado") { -%>

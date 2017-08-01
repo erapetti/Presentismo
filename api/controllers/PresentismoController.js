@@ -13,6 +13,8 @@ module.exports = {
 
 	index: function (req, res) {
 
+		var title = 'Consulta de cierre de presentismo';
+
 		var sessionid;
 		if (sails.config.environment === "development") {
 			sessionid = '9728448076454730240';
@@ -22,7 +24,7 @@ module.exports = {
 		wsPortal.getSession(sessionid, function(err,session) {
 			if (sails.config.environment === "development") {
 				err = undefined;
-				session = {Sesionesid:1,Userid:'u19724241',Dependid:201,Lugarid:201};
+				session = {Sesionesid:1,Userid:'u19724241',Dependid:204,Lugarid:204};
 			}
 			if (err) {
 				return res.forbidden(err);
@@ -71,7 +73,7 @@ module.exports = {
 						if (err) {
 							sails.log("error="+err);
 							mensaje = "No se pudo cerrar el mes por un error al acceder a la base de datos";
-							return res.view({infoMeses:infoMeses, DependId:session.Dependid, presentismo:presentismo,  mensaje:mensaje, certificados:undefined});
+							return res.view({title:title,infoMeses:infoMeses, DependId:session.Dependid, presentismo:presentismo,  mensaje:mensaje, certificados:undefined});
 						} else {
 							sails.log("Cierre de mes="+cerrar+" dependid="+session.Dependid);
 							return res.redirect(sails.config.environment==='development' ? '' : '/node/presentismo');
@@ -81,7 +83,7 @@ module.exports = {
 				}
 
 				if (!mes) {
-					return res.view({infoMeses:infoMeses, DependId:session.Dependid, presentismo:presentismo, certificados:undefined});
+					return res.view({title:title,infoMeses:infoMeses, DependId:session.Dependid, presentismo:presentismo, certificados:undefined});
 				}
 
 				infoMeses.mes.id = mes;
@@ -117,7 +119,7 @@ module.exports = {
 								return res.serverError(err);
 							}
 
-							return res.view({arrInasistencias:arrInasistencias, personalLiceo:personalLiceo, infoMeses:infoMeses, DependId:session.Dependid, presentismo:presentismo, certificados:certificados});
+							return res.view({title:title,arrInasistencias:arrInasistencias, personalLiceo:personalLiceo, infoMeses:infoMeses, DependId:session.Dependid, presentismo:presentismo, certificados:certificados});
 						});
 					});
 				});
@@ -126,6 +128,8 @@ module.exports = {
 	},
 
 	pendientes: function (req, res) {
+
+		var title = 'Consulta de pendientes de cierre de presentismo';
 
 		var sessionid;
 		if (sails.config.environment === "development") {
@@ -178,13 +182,15 @@ module.exports = {
 						infoMeses.meses[info.mes].depend[info.DependId] = info.updatedAt;
 					});
 
-					return res.view({depends:depends, infoMeses:infoMeses})
+					return res.view({title:title,depends:depends, infoMeses:infoMeses})
 				});
 			});
 		});
 	},
 
 	multas: function (req, res) {
+
+		var title = 'Consulta de multas por inasistencia';
 
 		var sessionid;
 		if (sails.config.environment === "development") {
@@ -212,11 +218,11 @@ module.exports = {
 			var sprintf = require("sprintf");
 
 			var infoMeses = {meses:Array(), mes:{}};
-			for (var m=3;m<12;m++) {
+			for (var m=1;m<=12;m++) {
 				infoMeses.meses[m] = {
 					nombre: meses[m],
-					inhabilitado: (m >= mesActual),
-					fecha: new Date(anio+"-"+(m+1)+"-09 GMT-0300")
+					inhabilitado: ((m < 7) || (m > mesActual)),
+					fecha: new Date(anio+"-"+(m+1)+"-04 GMT-0300")
 				};
 				infoMeses.meses[m].estado = (now > infoMeses.meses[m].fecha.getTime() ? "Vencido" : "Vencimiento");
 			}
@@ -243,7 +249,7 @@ module.exports = {
 								if (err) {
 									sails.log("error="+err);
 									mensaje = "No se pudo cerrar el mes por un error al acceder a la base de datos";
-									return res.view({infoMeses:infoMeses, DependId:session.Dependid, mensaje:mensaje, certificados:undefined});
+									return res.view({title:title,infoMeses:infoMeses, DependId:session.Dependid, mensaje:mensaje, certificados:undefined});
 								} else {
 									sails.log("data="+data);
 									sails.log("Cierre por update de mes="+cerrar+" dependid="+session.Dependid);
@@ -260,7 +266,7 @@ module.exports = {
 				}
 
 				if (!mes) {
-					return res.view({infoMeses:infoMeses, DependId:session.Dependid, certificados:undefined});
+					return res.view({title:title,infoMeses:infoMeses, DependId:session.Dependid, certificados:undefined});
 				}
 
 				infoMeses.mes.id = mes;
@@ -304,7 +310,7 @@ module.exports = {
 									return res.serverError(err);
 								}
 
-								return res.view({arrInasistencias:arrInasistencias, personalLiceo:personalLiceo, infoMeses:infoMeses, DependId:session.Dependid, certificados:certificados, trabaja_sabado:trabaja_sabado});
+								return res.view({title:title,arrInasistencias:arrInasistencias, personalLiceo:personalLiceo, infoMeses:infoMeses, DependId:session.Dependid, certificados:certificados, trabaja_sabado:trabaja_sabado});
 							});
 						});
 					});
