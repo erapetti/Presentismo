@@ -17,7 +17,7 @@
 
 <form method="post">
 <input type="hidden" name="dependid" value="<%= DependId %>">
-<div class="panel panel-default">
+<div class="panel panel-default hidden-print">
   <div class="panel-heading">Mes:</div>
 
   <div class="panel-body">
@@ -42,12 +42,12 @@
 </div>
 </form>
 
-<p>Ver cierres pendientes: <a href="<% if (sails.config.environment != 'development') { %>/node/presentismo/<% } %>pendientes"><span class="glyphicon glyphicon-eye-open"></span></a></p>
+<p class="hidden-print">Ver cierres pendientes: <a href="<% if (sails.config.environment != 'development') { %>/node/presentismo/<% } %>pendientes"><span class="glyphicon glyphicon-eye-open"></span></a></p>
 
 <% if (infoMeses.mes.id) { -%>
 
 
-<div id="indice">
+<div id="indice" class="hidden-print">
 <h2>Contenido:</h2>
 <ul>
 	<% if (Object.keys(certificados).length>0) { -%>
