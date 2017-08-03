@@ -201,7 +201,7 @@ module.exports = {
 		wsPortal.getSession(sessionid, function(err,session) {
 			if (sails.config.environment === "development") {
 				err = undefined;
-				session = {Sesionesid:1,Userid:'u19724241',Dependid:264,Lugarid:264};
+				session = {Sesionesid:1,Userid:'u19724241',Dependid:202,Lugarid:202};
 			}
 			if (err) {
 				return res.forbidden(err);
@@ -221,7 +221,7 @@ module.exports = {
 			for (var m=1;m<=12;m++) {
 				infoMeses.meses[m] = {
 					nombre: meses[m],
-					inhabilitado: ((m < 7) || (m > mesActual)),
+					inhabilitado: ((m < 7) || (m >= mesActual)),
 					fecha: new Date(anio+"-"+(m+1)+"-04 GMT-0300")
 				};
 				infoMeses.meses[m].estado = (now > infoMeses.meses[m].fecha.getTime() ? "Vencido" : "Vencimiento");
@@ -285,11 +285,10 @@ module.exports = {
 							arrInasistencias[info.perdocid] = Array();
 						}
 						if (typeof arrInasistencias[info.perdocid][info.InasisLicTipo]==='undefined') {
-							arrInasistencias[info.perdocid][info.InasisLicTipo] = {horas:0, dias:0, total:0};
+							arrInasistencias[info.perdocid][info.InasisLicTipo] = {horas:0, dias:0};
 						}
 						arrInasistencias[info.perdocid][info.InasisLicTipo].horas += info.horas;
 						arrInasistencias[info.perdocid][info.InasisLicTipo].dias  += info.dias;
-						arrInasistencias[info.perdocid][info.InasisLicTipo].total += info.inasistencias;
 					});
 
 					// obtengo los certificados que faltan en la dependencia

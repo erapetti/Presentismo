@@ -99,7 +99,7 @@
   <div class="panel-body">
 	<table class="table">
 	<% personalLiceo.forEach (function(info) { -%>
-		<% if ((!arrInasistencias[ info.cedula ] || !arrInasistencias[ info.cedula ][ info.TipoCargo() ] || arrInasistencias[ info.cedula ][ info.TipoCargo() ].total == 0)) {
+		<% if (!arrInasistencias[ info.cedula ] || !arrInasistencias[ info.cedula ][ info.TipoCargo() ] || (arrInasistencias[ info.cedula ][ info.TipoCargo() ].dias == 0 && arrInasistencias[ info.cedula ][ info.TipoCargo() ].horas == 0)) {
 		   hayPersonal=1 -%>
 		<tr>
 			<td><%= info.cedula %></td>
@@ -125,7 +125,7 @@
   <div class="panel-body">
 	<table class="table">
 	<% personalLiceo.forEach (function(info) { -%>
-		<% if (arrInasistencias[ info.cedula ] && arrInasistencias[ info.cedula ][ info.TipoCargo() ] && arrInasistencias[ info.cedula ][ info.TipoCargo() ].total > 0) {
+		<% if (arrInasistencias[ info.cedula ] && arrInasistencias[ info.cedula ][ info.TipoCargo() ] && (arrInasistencias[ info.cedula ][ info.TipoCargo() ].dias > 0 || arrInasistencias[ info.cedula ][ info.TipoCargo() ].horas > 0)) {
 		   hayPersonal=1 %>
 		<tr>
 			<td><%= info.cedula %></td>

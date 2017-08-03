@@ -46,22 +46,20 @@ module.exports = {
     return Inasistencias.query(`
     SELECT perdocid,
       InasisLicTipo,
-      sum(if(InasisLicDiaHora='H',InasisLicCant,0)) horas,
-      sum(if(ID.InasisLicId_Mes is not null,InasisLicId_Dias,if(InasisLicDiaHora='D',1,0))) dias,
-      ifnull(max(InasisLicId_Dias),1) inasistencias
+      sum(horas) horas,
+      sum(dias) dias
     FROM (
-      SELECT *
+      SELECT PERSONALPERID,InasisLicTipo,InasisLicFchIni,InasisLicFchFin,InasisLicId,InasCausId,sum(if(InasisLicDiaHora='H',InasisLicCant,0)) horas,sum(if(InasisLicDiaHora='D',InasisLicCant,0)) dias
       FROM Personal.INASISLIC
       JOIN FUNCIONES_ASIGNADAS USING (FuncAsignadaId)
       JOIN SILLAS USING (SillaId)
       WHERE SillaDependId=?
         AND InasisLicFchFin>=?
         AND InasisLicFchIni<=?
-      GROUP BY PERSONALPERID,INASISLICID
+      GROUP BY PERSONALPERID,InasisLicTipo,InasisLicFchIni,InasisLicFchFin,InasisLicId,InasCausId
     ) I
     JOIN INASCAUSALES USING (InasCausId)
     JOIN Personas.PERSONASDOCUMENTOS ON personalperid=perid and paiscod="UY" and doccod="CI"
-    LEFT JOIN INASISLIC_LICENCIA_DIAS ID on ID.InasisLicId=I.InasisLicId and ID.PersonalPerId=I.PersonalPerId and ID.InasisLicId_Mes=?
     WHERE InasCausDescuento<>0
       AND InasCausTipo='I'
     GROUP BY perdocid,InasisLicTipo,InasisLicFchIni,InasisLicFchFin`
