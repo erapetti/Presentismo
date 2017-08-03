@@ -201,7 +201,7 @@ module.exports = {
 		wsPortal.getSession(sessionid, function(err,session) {
 			if (sails.config.environment === "development") {
 				err = undefined;
-				session = {Sesionesid:1,Userid:'u19724241',Dependid:202,Lugarid:202};
+				session = {Sesionesid:1,Userid:'u19724241',Dependid:601,Lugarid:601};
 			}
 			if (err) {
 				return res.forbidden(err);
@@ -298,7 +298,7 @@ module.exports = {
 						}
 
 						// obtengo las personas de la dependencia:
-						Personal.find({Anio:anio,Mes:mes,DependId:session.Dependid}).sort('PerNombreCompleto ASC').exec(function(err, personalLiceo) {
+						Personal.find({Anio:anio,Mes:mes,DependId:session.Dependid,activo:'S'}).sort('PerNombreCompleto ASC').exec(function(err, personalLiceo) {
 							if (err) {
 								return res.serverError(err);
 							}
