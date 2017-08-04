@@ -222,7 +222,7 @@ module.exports = {
 				infoMeses.meses[m] = {
 					nombre: meses[m],
 					inhabilitado: ((m < 7) || (m >= mesActual)),
-					fecha: new Date(anio+"-"+(m+1)+"-04 GMT-0300")
+					fecha: new Date(anio+"-"+(m+1)+"-11 GMT-0300")
 				};
 				infoMeses.meses[m].estado = (now > infoMeses.meses[m].fecha.getTime() ? "Vencido" : "Vencimiento");
 			}
