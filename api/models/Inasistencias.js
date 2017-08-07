@@ -46,8 +46,9 @@ module.exports = {
     return Inasistencias.query(`
     SELECT perdocid,
       InasisLicTipo,
+      InasCausTipo,
       sum(horas) horas,
-      sum(dias) dias
+      sum(ifnull(InasisLicId_Dias, dias)) dias
     FROM (
       SELECT PERSONALPERID,InasisLicTipo,InasisLicFchIni,InasisLicFchFin,InasisLicId,InasCausId,sum(if(InasisLicDiaHora='H',InasisLicCant,0)) horas,sum(if(InasisLicDiaHora='D',InasisLicCant,0)) dias
       FROM Personal.INASISLIC
@@ -60,11 +61,11 @@ module.exports = {
     ) I
     JOIN INASCAUSALES USING (InasCausId)
     JOIN Personas.PERSONASDOCUMENTOS ON personalperid=perid and paiscod="UY" and doccod="CI"
+    LEFT JOIN INASISLIC_LICENCIA_DIAS ID on ID.InasisLicId=I.InasisLicId and ID.PersonalPerId=I.PersonalPerId and ID.InasisLicId_Mes=?
     WHERE InasCausDescuento<>0
-      AND InasCausTipo='I'
-    GROUP BY perdocid,InasisLicTipo,InasisLicFchIni,InasisLicFchFin`
+    GROUP BY perdocid,InasisLicTipo,InasCausTipo,InasisLicFchIni,InasisLicFchFin`
       ,
-      [data.DependId, data.Anio+'-'+data.Mes+'-01', data.Anio+'-'+data.Mes+'-31', data.Mes],
+      [data.DependId, data.Anio+'-'+data.Mes+'-01', data.Anio+'-'+data.Mes+'-31', data.Mes ],
       callback);
   },
 };

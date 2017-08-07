@@ -201,7 +201,7 @@ module.exports = {
 		wsPortal.getSession(sessionid, function(err,session) {
 			if (sails.config.environment === "development") {
 				err = undefined;
-				session = {Sesionesid:1,Userid:'u19724241',Dependid:601,Lugarid:601};
+				session = {Sesionesid:1,Userid:'u19724241',Dependid:1023,Lugarid:1023};
 			}
 			if (err) {
 				return res.forbidden(err);
@@ -251,7 +251,6 @@ module.exports = {
 									mensaje = "No se pudo cerrar el mes por un error al acceder a la base de datos";
 									return res.view({title:title,infoMeses:infoMeses, DependId:session.Dependid, mensaje:mensaje, certificados:undefined});
 								} else {
-									sails.log("data="+data);
 									sails.log("Cierre por update de mes="+cerrar+" dependid="+session.Dependid);
 									return res.redirect(sails.config.environment==='development' ? 'multas' : '/node/presentismo/multas');
 								}
@@ -284,11 +283,14 @@ module.exports = {
 						if (!arrInasistencias[info.perdocid]) {
 							arrInasistencias[info.perdocid] = Array();
 						}
-						if (typeof arrInasistencias[info.perdocid][info.InasisLicTipo]==='undefined') {
-							arrInasistencias[info.perdocid][info.InasisLicTipo] = {horas:0, dias:0};
+						if (!arrInasistencias[info.perdocid][info.InasisLicTipo]) {
+							arrInasistencias[info.perdocid][info.InasisLicTipo] = Array();
 						}
-						arrInasistencias[info.perdocid][info.InasisLicTipo].horas += info.horas;
-						arrInasistencias[info.perdocid][info.InasisLicTipo].dias  += info.dias;
+						if (typeof arrInasistencias[info.perdocid][info.InasisLicTipo][info.InasCausTipo]==='undefined') {
+							arrInasistencias[info.perdocid][info.InasisLicTipo][info.InasCausTipo] = {horas:0, dias:0};
+						}
+						arrInasistencias[info.perdocid][info.InasisLicTipo][info.InasCausTipo].horas += info.horas;
+						arrInasistencias[info.perdocid][info.InasisLicTipo][info.InasCausTipo].dias  += info.dias;
 					});
 
 					// obtengo los certificados que faltan en la dependencia

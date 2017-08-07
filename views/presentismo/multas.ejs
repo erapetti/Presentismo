@@ -58,8 +58,9 @@
 	<% if (Object.keys(certificados).length>0) { -%>
 	<li><a href="#certificados">Personal con licencias certificadas que no están ingresadas al corporativo</a></li>
 	<% } -%>
-	<li><a href="#sinmultas">Personal sin multas</a></li>
-	<li><a href="#conmultas">Personal con multas</a></li>
+	<li><a href="#sinmultas">Personal sin multas por inasistencias</a></li>
+	<li><a href="#conmultas">Personal con multas por inasistencias</a></li>
+	<li><a href="#conlicencias">Personal con licencias</a></li>
 </ul>
 </div>
 
@@ -99,14 +100,14 @@
   <div class="panel-body">
 	<table class="table">
 	<% personalLiceo.forEach (function(info) { -%>
-		<% if (!arrInasistencias[ info.cedula ] || !arrInasistencias[ info.cedula ][ info.TipoCargo() ] || (arrInasistencias[ info.cedula ][ info.TipoCargo() ].dias == 0 && arrInasistencias[ info.cedula ][ info.TipoCargo() ].horas == 0)) {
+		<% if (!arrInasistencias[info.cedula] || !arrInasistencias[info.cedula][info.TipoCargo()] || !arrInasistencias[info.cedula][info.TipoCargo()]['I'] || (arrInasistencias[info.cedula][info.TipoCargo()]['I'].dias == 0 && arrInasistencias[info.cedula][info.TipoCargo()]['I'].horas == 0)) {
 		   hayPersonal=1 -%>
 		<tr>
 			<td><%= info.cedula %></td>
 			<td><%= info.PerNombreCompleto %></td>
 			<td><%= info.horas %> horas</td>
 			<td><%= info.cargo %></td>
-			<td>SIN FALTAS</td>
+			<td><% if (arrInasistencias[info.cedula] && arrInasistencias[info.cedula][info.TipoCargo()] && arrInasistencias[info.cedula][info.TipoCargo()]['L'].dias > 0) { -%>SIN INASIST. CON LICENCIAS<% } else { -%>SIN INASISTENCIAS<% } -%></td>
 		</tr>
 		<% }
 	   });
@@ -125,7 +126,7 @@
   <div class="panel-body">
 	<table class="table">
 	<% personalLiceo.forEach (function(info) { -%>
-		<% if (arrInasistencias[ info.cedula ] && arrInasistencias[ info.cedula ][ info.TipoCargo() ] && (arrInasistencias[ info.cedula ][ info.TipoCargo() ].dias > 0 || arrInasistencias[ info.cedula ][ info.TipoCargo() ].horas > 0)) {
+		<% if (arrInasistencias[info.cedula] && arrInasistencias[info.cedula][info.TipoCargo()] && arrInasistencias[info.cedula][info.TipoCargo()]['I'] && (arrInasistencias[info.cedula][info.TipoCargo()]['I'].dias > 0 || arrInasistencias[info.cedula][info.TipoCargo()]['I'].horas > 0)) {
 		   hayPersonal=1 %>
 		<tr>
 			<td><%= info.cedula %></td>
@@ -133,8 +134,8 @@
 			<td><%= info.horas %> horas</td>
 			<td><%= info.cargo %></td>
 			<td><% if(arrInasistencias[ info.cedula ] && arrInasistencias[ info.cedula ][ info.TipoCargo() ]) { -%>
-						<% dias = arrInasistencias[ info.cedula ][ info.TipoCargo() ].dias -%>
-						<% horas = arrInasistencias[ info.cedula ][ info.TipoCargo() ].horas -%>
+						<% dias = arrInasistencias[info.cedula][info.TipoCargo()]['I'].dias -%>
+						<% horas = arrInasistencias[info.cedula][info.TipoCargo()]['I'].horas -%>
 						<% dias_semana = trabaja_sabado ? 6 : 5 -%>
 					  -
 						<% if (dias > 0) { -%>
@@ -163,6 +164,39 @@
 	</table>
   </div>
 </div>
+
+<a id="conlicencias" name="conlicencias"></a>
+<div class="panel panel-default">
+  <div class="panel-heading">Personal del liceo con licencias este mes (la multa la ingresa Div. Hacienda cuando recibe la RC):</div>
+  <% hayPersonal=0 %>
+  <div class="panel-body">
+	<table class="table">
+	<% personalLiceo.forEach (function(info) { -%>
+		<% if (arrInasistencias[info.cedula] && arrInasistencias[info.cedula][info.TipoCargo()] && arrInasistencias[info.cedula][info.TipoCargo()]['L'] && arrInasistencias[info.cedula][info.TipoCargo()]['L'].dias > 0) {
+		   hayPersonal=1 %>
+		<tr>
+			<td><%= info.cedula %></td>
+			<td><%= info.PerNombreCompleto %></td>
+			<td><%= info.horas %> horas</td>
+			<td><%= info.cargo %></td>
+			<td><% if(arrInasistencias[info.cedula] && arrInasistencias[info.cedula][info.TipoCargo()]['L']) { -%>
+						<% dias = arrInasistencias[info.cedula][info.TipoCargo()]['L'].dias -%>
+						<% dias_semana = trabaja_sabado ? 6 : 5 -%>
+					  -
+						<% if (dias > 0) { -%>
+							<%= dias %> día<% if (dias>1) { %>s<% } %>
+						<% } %>
+					<% } %></td>
+		</tr>
+		<% }
+	   });
+	   if (!hayPersonal) { %>
+		<tr><td>No hay personal que cumpla este criterio</td></tr>
+	<% } %>
+	</table>
+  </div>
+</div>
+
 
 <% } %>
 
