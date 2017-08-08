@@ -43,6 +43,16 @@ module.exports = {
 		TipoCargo: function() {
 			return (this.tipo==1 ? 'ND' : (this.tipo==2 ? 'DI' : 'DD'));
 		},
-	}
+	},
+
+	MapeoDependencia: function(data,callback) {
+		return Personal.query(`
+			select idas400
+			from mapeo_dependencias
+			where idcorp = ?`
+			,
+			[data.idcorp],
+			callback);
+		},
 
 };

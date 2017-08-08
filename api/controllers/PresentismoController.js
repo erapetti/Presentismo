@@ -24,7 +24,7 @@ module.exports = {
 		wsPortal.getSession(sessionid, function(err,session) {
 			if (sails.config.environment === "development") {
 				err = undefined;
-				session = {Sesionesid:1,Userid:'u19724241',Dependid:204,Lugarid:204};
+				session = {Sesionesid:1,Userid:'u19724241',Dependid:5860,Lugarid:5860};
 			}
 			if (err) {
 				return res.forbidden(err);
@@ -113,13 +113,21 @@ module.exports = {
 							return res.serverError(err);
 						}
 
-						// obtengo las personas de la dependencia:
-						Personal.find({Anio:anio,Mes:mes,DependId:session.Dependid}).sort('PerNombreCompleto ASC').exec(function(err, personalLiceo) {
+						// mapeo la dependencia desde el corporativo al AS400
+						Personal.MapeoDependencia({idcorp:session.Dependid}, function(err, mapeo) {
 							if (err) {
 								return res.serverError(err);
 							}
 
-							return res.view({title:title,arrInasistencias:arrInasistencias, personalLiceo:personalLiceo, infoMeses:infoMeses, DependId:session.Dependid, presentismo:presentismo, certificados:certificados});
+							// obtengo las personas de la dependencia:
+							Personal.find({Anio:anio,Mes:mes,DependId:typeof mapeo[0] !== 'undefined' ? mapeo[0].idas400 : session.Dependid}).sort('PerNombreCompleto ASC').exec(function(err, personalLiceo) {
+								if (err) {
+									return res.serverError(err);
+								}
+
+								return res.view({title:title,arrInasistencias:arrInasistencias, personalLiceo:personalLiceo, infoMeses:infoMeses, DependId:session.Dependid, presentismo:presentismo, certificados:certificados});
+							});
+
 						});
 					});
 				});
@@ -201,7 +209,7 @@ module.exports = {
 		wsPortal.getSession(sessionid, function(err,session) {
 			if (sails.config.environment === "development") {
 				err = undefined;
-				session = {Sesionesid:1,Userid:'u19724241',Dependid:1023,Lugarid:1023};
+				session = {Sesionesid:1,Userid:'u19724241',Dependid:4300,Lugarid:4300};
 			}
 			if (err) {
 				return res.forbidden(err);
@@ -299,19 +307,26 @@ module.exports = {
 							return res.serverError(err);
 						}
 
-						// obtengo las personas de la dependencia:
-						Personal.find({Anio:anio,Mes:mes,DependId:session.Dependid,activo:'S'}).sort('PerNombreCompleto ASC').exec(function(err, personalLiceo) {
+						// mapeo la dependencia desde el corporativo al AS400
+						Personal.MapeoDependencia({idcorp:session.Dependid}, function(err, mapeo) {
 							if (err) {
 								return res.serverError(err);
 							}
 
-							// averiguo si este liceo trabaja los sábados:
-							Estudiantil.liceo_sabado({DependId:session.Dependid,Anio:anio,Mes:mes},function(err,trabaja_sabado){
+							// obtengo las personas de la dependencia:
+							Personal.find({Anio:anio,Mes:mes,DependId:typeof mapeo[0] !== 'undefined' ? mapeo[0].idas400 : session.Dependid,activo:'S'}).sort('PerNombreCompleto ASC').exec(function(err, personalLiceo) {
 								if (err) {
 									return res.serverError(err);
 								}
 
-								return res.view({title:title,arrInasistencias:arrInasistencias, personalLiceo:personalLiceo, infoMeses:infoMeses, DependId:session.Dependid, certificados:certificados, trabaja_sabado:trabaja_sabado});
+								// averiguo si este liceo trabaja los sábados:
+								Estudiantil.liceo_sabado({DependId:session.Dependid,Anio:anio,Mes:mes},function(err,trabaja_sabado){
+									if (err) {
+										return res.serverError(err);
+									}
+
+									return res.view({title:title,arrInasistencias:arrInasistencias, personalLiceo:personalLiceo, infoMeses:infoMeses, DependId:session.Dependid, certificados:certificados, trabaja_sabado:trabaja_sabado});
+								});
 							});
 						});
 					});
