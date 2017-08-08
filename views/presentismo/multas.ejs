@@ -60,7 +60,7 @@
 	<% } -%>
 	<li><a href="#sinmultas">Personal sin multas por inasistencias</a></li>
 	<li><a href="#conmultas">Personal con multas por inasistencias</a></li>
-	<li><a href="#conlicencias">Personal con licencias</a></li>
+	<li><a href="#conlicencias">Personal con multas por licencias</a></li>
 </ul>
 </div>
 
@@ -100,14 +100,19 @@
   <div class="panel-body">
 	<table class="table">
 	<% personalLiceo.forEach (function(info) { -%>
-		<% if (!arrInasistencias[info.cedula] || !arrInasistencias[info.cedula][info.TipoCargo()] || !arrInasistencias[info.cedula][info.TipoCargo()]['I'] || (arrInasistencias[info.cedula][info.TipoCargo()]['I'].dias == 0 && arrInasistencias[info.cedula][info.TipoCargo()]['I'].horas == 0)) {
+		<% if (!arrInasistencias[info.cedula] ||
+		 			 !arrInasistencias[info.cedula][info.TipoCargo()] ||
+					 !arrInasistencias[info.cedula][info.TipoCargo()]['L'] &&
+					  (!arrInasistencias[info.cedula][info.TipoCargo()]['I'] ||
+					  (arrInasistencias[info.cedula][info.TipoCargo()]['I'].dias == 0 && arrInasistencias[info.cedula][info.TipoCargo()]['I'].horas == 0)
+					  )) {
 		   hayPersonal=1 -%>
 		<tr>
 			<td><%= info.cedula %></td>
 			<td><%= info.PerNombreCompleto %></td>
 			<td><%= info.horas %> horas</td>
 			<td><%= info.cargo %></td>
-			<td><% if (arrInasistencias[info.cedula] && arrInasistencias[info.cedula][info.TipoCargo()] && arrInasistencias[info.cedula][info.TipoCargo()]['L'].dias > 0) { -%>SIN INASIST. CON LICENCIAS<% } else { -%>SIN INASISTENCIAS<% } -%></td>
+			<td>SIN INASISTENCIAS</td>
 		</tr>
 		<% }
 	   });
@@ -126,7 +131,11 @@
   <div class="panel-body">
 	<table class="table">
 	<% personalLiceo.forEach (function(info) { -%>
-		<% if (arrInasistencias[info.cedula] && arrInasistencias[info.cedula][info.TipoCargo()] && arrInasistencias[info.cedula][info.TipoCargo()]['I'] && (arrInasistencias[info.cedula][info.TipoCargo()]['I'].dias > 0 || arrInasistencias[info.cedula][info.TipoCargo()]['I'].horas > 0)) {
+		<% if (arrInasistencias[info.cedula] &&
+		       arrInasistencias[info.cedula][info.TipoCargo()] &&
+					 arrInasistencias[info.cedula][info.TipoCargo()]['I'] &&
+					 (arrInasistencias[info.cedula][info.TipoCargo()]['I'].dias > 0 || arrInasistencias[info.cedula][info.TipoCargo()]['I'].horas > 0)
+					 ) {
 		   hayPersonal=1 %>
 		<tr>
 			<td><%= info.cedula %></td>
@@ -167,12 +176,15 @@
 
 <a id="conlicencias" name="conlicencias"></a>
 <div class="panel panel-default">
-  <div class="panel-heading">Personal del liceo con licencias este mes:</div>
+  <div class="panel-heading">Personal del liceo con multas por licencias este mes:</div>
   <% hayPersonal=0 %>
   <div class="panel-body">
 	<table class="table">
 	<% personalLiceo.forEach (function(info) { -%>
-		<% if (arrInasistencias[info.cedula] && arrInasistencias[info.cedula][info.TipoCargo()] && arrInasistencias[info.cedula][info.TipoCargo()]['L'] && arrInasistencias[info.cedula][info.TipoCargo()]['L'].dias > 0) {
+		<% if (arrInasistencias[info.cedula] &&
+	 				 arrInasistencias[info.cedula][info.TipoCargo()] &&
+					 arrInasistencias[info.cedula][info.TipoCargo()]['L'] &&
+					 arrInasistencias[info.cedula][info.TipoCargo()]['L'].dias > 0) {
 		   hayPersonal=1 %>
 		<tr>
 			<td><%= info.cedula %></td>
