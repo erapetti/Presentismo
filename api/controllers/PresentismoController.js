@@ -24,7 +24,7 @@ module.exports = {
 		wsPortal.getSession(sessionid, function(err,session) {
 			if (sails.config.environment === "development") {
 				err = undefined;
-				session = {Sesionesid:1,Userid:'u19724241',Dependid:5860,Lugarid:5860};
+				session = {Sesionesid:1,Userid:'u19724241',Dependid:1003,Lugarid:1003};
 			}
 			if (err) {
 				return res.forbidden(err);
@@ -125,7 +125,7 @@ module.exports = {
 									return res.serverError(err);
 								}
 
-								return res.view({title:title,arrInasistencias:arrInasistencias, personalLiceo:personalLiceo, infoMeses:infoMeses, DependId:session.Dependid, presentismo:presentismo, certificados:certificados});
+								return res.view({title:title, arrInasistencias:arrInasistencias, personalLiceo:personalLiceo, infoMeses:infoMeses, DependId:session.Dependid, presentismo:presentismo, certificados:certificados});
 							});
 
 						});

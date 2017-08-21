@@ -77,8 +77,8 @@
                 <tr>
                         <td><%= info.cedula %></td>
                         <td><%= info.PerNombreCompleto %></td>
-                        <td><%= infoMeses.fecha_toString(info.InasisLicFchIni) %></td>
-                        <td><%= infoMeses.fecha_toString(info.InasisLicFchFin) %></td>
+                        <td><%= infoMeses.fecha_toString(info.CertFchIni) %></td>
+                        <td><%= infoMeses.fecha_toString(info.CertFchFin) %></td>
                         <td><%= (typeof info.tipoLicencia==='string' ? info.tipoLicencia : '') %></td>
 		</tr>
 	<% }) -%>

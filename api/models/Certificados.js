@@ -15,11 +15,11 @@ module.exports = {
   tableName: 'certificaciones_anep',
 	attributes: {
 		certid: 'integer',
-		InasisLicFecha: 'date',
+		CertFecha: 'date',
 		cedula: 'integer',
 		PerNombreCompleto: 'string',
-		InasisLicFchIni: 'date',
-		InasisLicFchFin: 'date',
+		CertFchIni: 'date',
+		CertFchFin: 'date',
 		tipoLicencia: 'string',
 		cargo: 'string',
 		horas: 'integer',
@@ -28,11 +28,11 @@ module.exports = {
 	get: function(data,callback) {
 		return this.query(`
 		SELECT certid,
-		       C.InasisLicFecha,
+		       CertFecha,
 		       A.cedula,
 		       A.PerNombreCompleto,
-		       C.InasisLicFchIni,
-		       C.InasisLicFchFin,
+		       CertFchIni,
+		       CertFchFin,
 		       case codlic
             when "J" then "Junta Médica"
             when "L" then "Lactancia"
@@ -50,8 +50,8 @@ module.exports = {
 		 JOIN Personas.PERSONASDOCUMENTOS
 		   ON perdocid=cast(A.cedula as char(30)) AND paiscod="UY" AND doccod="CI"
 		WHERE codlic<>"N"
-		  AND C.InasisLicFchFin>=?
-		  AND C.InasisLicFchIni<=?
+		  AND C.CertFchFin>=?
+		  AND C.CertFchIni<=?
 		  AND A.dependid=?
 		  AND A.anio=?
 		  AND A.mes=?
@@ -63,14 +63,14 @@ module.exports = {
         JOIN FUNCIONES_ASIGNADAS USING (FuncAsignadaId)
         JOIN SILLAS USING (SillaId)
         WHERE personalperid=perid
-          AND I.InasisLicFchIni<=C.InasisLicFchIni
-          AND I.InasisLicFchFin>=C.InasisLicFchFin
+          AND InasisLicFchIni<=CertFchIni
+          AND InasisLicFchFin>=CertFchFin
           AND SillaDependid=A.dependid
 		  )
-		GROUP BY certid,C.InasisLicFecha,A.cedula,
-             C.InasisLicFchIni,C.InasisLicFchFin,
+		GROUP BY certid,CertFecha,A.cedula,
+             CertFchIni,CertFchFin,
              codlic,C.cargo,C.horas,observaciones
-		ORDER BY perdocid,C.InasisLicFchIni
+		ORDER BY perdocid,C.CertFchIni
 		`,
 		[data.Anio+'-'+data.Mes+'-01', data.Anio+'-'+data.Mes+'-31', data.DependId, data.Anio, data.Mes],
 		callback);
