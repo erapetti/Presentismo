@@ -50,7 +50,7 @@ module.exports = {
       sum(horas) horas,
       sum(ifnull(InasisLicId_Dias, dias)) dias
     FROM (
-      SELECT PERSONALPERID,InasisLicTipo,InasisLicFchIni,InasisLicFchFin,InasisLicId,InasCausId,sum(if(InasisLicDiaHora='H',InasisLicCant,0)) horas,sum(if(InasisLicDiaHora='D',InasisLicCant,0)) dias
+      SELECT PERSONALPERID,InasisLicTipo,InasisLicFchIni,InasisLicFchFin,InasisLicId,InasCausId,sum(if(InasisLicDiaHora='H',InasisLicCant,0)*if(InasCausId='SA',2,1)) horas,sum(if(InasisLicDiaHora='D',InasisLicCant,0)) dias
       FROM Personal.INASISLIC
       JOIN FUNCIONES_ASIGNADAS USING (FuncAsignadaId)
       JOIN SILLAS USING (SillaId)
