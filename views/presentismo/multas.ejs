@@ -99,8 +99,29 @@
   <% hayPersonal=0 %>
   <div class="panel-body">
 	<table class="table">
+		<tr>
+			<th>Cédula</th>
+			<th>Nombre</th>
+			<th>Carga Horaria</th>
+			<th>Cargo</th>
+			<th>Inasistencias</th>
+		</tr>
 	<% personalLiceo.forEach (function(info) { -%>
-		<% if (!arrInasistencias[info.cedula] || !arrInasistencias[info.cedula][info.TipoCargo()]) {
+		<% var sinmulta = (!arrInasistencias[info.cedula] || !arrInasistencias[info.cedula][info.TipoCargo()]);
+		   if (!sinmulta) {
+				 // Tengo que recorrer todos los causales y ciclos de pago para comprobar que están todos en cero, entonces está sin multa
+				 sinmulta=true;
+				 for (var InasCausTipo in arrInasistencias[info.cedula][info.TipoCargo()]) {
+					 for (var InasCausId in arrInasistencias[info.cedula][info.TipoCargo()][InasCausTipo]) {
+						 for (var CicloPago in arrInasistencias[info.cedula][info.TipoCargo()][InasCausTipo][InasCausId]) {
+							 sinmulta = sinmulta
+							            && arrInasistencias[info.cedula][info.TipoCargo()][InasCausTipo][InasCausId][CicloPago].horas==0
+							            && arrInasistencias[info.cedula][info.TipoCargo()][InasCausTipo][InasCausId][CicloPago].dias==0;
+						 }
+					 }
+			 	 }
+			 }
+		   if (sinmulta) {
 		   	hayPersonal=1 -%>
 				<tr>
 					<td><%= info.cedula %></td>
@@ -125,6 +146,14 @@
   <% hayPersonal=0 %>
   <div class="panel-body">
 	<table class="table">
+		<tr>
+			<th>Cédula</th>
+			<th>Nombre</th>
+			<th>Carga Horaria</th>
+			<th>Cargo y Ciclo de Pago</th>
+			<th>Causal</th>
+			<th>Multa</th>
+		</tr>
 	<% personalLiceo.forEach (function(info) {
 			if (arrInasistencias[info.cedula] && arrInasistencias[info.cedula][info.TipoCargo()] && arrInasistencias[info.cedula][info.TipoCargo()]['I']) {
 
@@ -164,7 +193,7 @@
 			}
 		});
 	   if (!hayPersonal) { %>
-		<tr><td>No hay personal que cumpla este criterio</td></tr>
+		<tr><td colspan="6">No hay personal que cumpla este criterio</td></tr>
 	<% } %>
 	</table>
   </div>
@@ -176,6 +205,14 @@
   <% hayPersonal=0 %>
   <div class="panel-body">
 	<table class="table">
+			<tr>
+				<th>Cédula</th>
+				<th>Nombre</th>
+				<th>Carga Horaria</th>
+				<th>Cargo y Ciclo de Pago</th>
+				<th>Causal</th>
+				<th>Multa</th>
+			</tr>
 	<% personalLiceo.forEach (function(info) {
 			if (arrInasistencias[info.cedula] && arrInasistencias[info.cedula][info.TipoCargo()] && arrInasistencias[info.cedula][info.TipoCargo()]['L']) {
 				for (var InasCausId in arrInasistencias[info.cedula][info.TipoCargo()]['L']) {
@@ -198,7 +235,7 @@
 			}
 	   });
 	   if (!hayPersonal) { -%>
-			 <tr><td>No hay personal que cumpla este criterio</td></tr>
+			 <tr><td colspan="6">No hay personal que cumpla este criterio</td></tr>
 	<% } %>
 	</table>
   </div>
