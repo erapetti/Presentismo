@@ -78,15 +78,15 @@
 			<th>Hasta</th>
 			<th>Causal</th>
 		</tr>
-        <% certificados.forEach (function(info) { -%>
-                <tr>
-                        <td><%= info.cedula %></td>
-                        <td><%= info.PerNombreCompleto %></td>
-                        <td><%= infoMeses.fecha_toString(info.CertFchIni) %></td>
-                        <td><%= infoMeses.fecha_toString(info.CertFchFin) %></td>
-                        <td><%= (typeof info.tipoLicencia==='string' ? info.tipoLicencia : '') %></td>
-		</tr>
-	<% }) -%>
+    <% certificados.forEach (function(info) { -%>
+			<tr>
+		    <td><%= info.cedula %></td>
+		    <td><%= info.PerNombreCompleto %></td>
+		    <td><%= infoMeses.fecha_toString(info.CertFchIni) %></td>
+		    <td><%= infoMeses.fecha_toString(info.CertFchFin) %></td>
+		    <td><%= (typeof info.tipoLicencia==='string' ? info.tipoLicencia : '') %></td>
+			</tr>
+		<% }) -%>
 	</table>
   </div>
 </div>
@@ -100,25 +100,20 @@
   <div class="panel-body">
 	<table class="table">
 	<% personalLiceo.forEach (function(info) { -%>
-		<% if (!arrInasistencias[info.cedula] ||
-		 			 !arrInasistencias[info.cedula][info.TipoCargo()] ||
-					 !arrInasistencias[info.cedula][info.TipoCargo()]['L'] &&
-					  (!arrInasistencias[info.cedula][info.TipoCargo()]['I'] ||
-					  (arrInasistencias[info.cedula][info.TipoCargo()]['I'].dias == 0 && arrInasistencias[info.cedula][info.TipoCargo()]['I'].horas == 0)
-					  )) {
-		   hayPersonal=1 -%>
-		<tr>
-			<td><%= info.cedula %></td>
-			<td><%= info.PerNombreCompleto %></td>
-			<td><%= info.horas %> horas</td>
-			<td><%= info.cargo %></td>
-			<td>SIN INASISTENCIAS</td>
-		</tr>
+		<% if (!arrInasistencias[info.cedula] || !arrInasistencias[info.cedula][info.TipoCargo()]) {
+		   	hayPersonal=1 -%>
+				<tr>
+					<td><%= info.cedula %></td>
+					<td><%= info.PerNombreCompleto %></td>
+					<td><%= info.horas %> horas</td>
+					<td><%= info.cargo %></td>
+					<td>SIN INASISTENCIAS</td>
+				</tr>
 		<% }
 	   });
-	   if (!hayPersonal) { %>
-		<tr><td>No hay personal que cumpla este criterio</td></tr>
-	<% } %>
+	   if (!hayPersonal) { -%>
+			 <tr><td>No hay personal que cumpla este criterio</td></tr>
+		 <% } %>
 	</table>
   </div>
 </div>
@@ -130,43 +125,44 @@
   <% hayPersonal=0 %>
   <div class="panel-body">
 	<table class="table">
-	<% personalLiceo.forEach (function(info) { -%>
-		<% if (arrInasistencias[info.cedula] &&
-		       arrInasistencias[info.cedula][info.TipoCargo()] &&
-					 arrInasistencias[info.cedula][info.TipoCargo()]['I'] &&
-					 (arrInasistencias[info.cedula][info.TipoCargo()]['I'].dias > 0 || arrInasistencias[info.cedula][info.TipoCargo()]['I'].horas > 0)
-					 ) {
-		   hayPersonal=1 %>
-		<tr>
-			<td><%= info.cedula %></td>
-			<td><%= info.PerNombreCompleto %></td>
-			<td><%= info.horas %> horas</td>
-			<td><%= info.cargo %></td>
-			<td><% if(arrInasistencias[ info.cedula ] && arrInasistencias[ info.cedula ][ info.TipoCargo() ]) { -%>
-						<% dias = arrInasistencias[info.cedula][info.TipoCargo()]['I'].dias -%>
-						<% horas = arrInasistencias[info.cedula][info.TipoCargo()]['I'].horas -%>
-						<% dias_semana = trabaja_sabado ? 6 : 5 -%>
-					  -
-						<% if (dias > 0) { -%>
-							<%= dias %> día<% if (dias>1) { %>s<% } %>
-							<% if (horas > 0) { -%>
-								y
-							<% } %>
-						<% } %>
-						<% if (dias == 0 || horas > 0) { -%>
-							<%= horas %> hora<% if (horas>1) { %>s<% } %>
-						<% } %>
-						<% if (dias > 0 && info.tipo != 2) { -%>
-							= - <%= Math.floor(dias * (info.horas/dias_semana)) + horas %> horas
-						<% } else if (horas > 0 && info.tipo == 2) { -%>
-							= - <%= Math.floor(horas / (info.horas/dias_semana)) + dias %> días
-						<% } %>
-					<% } else { -%>
-						0
-					<% } %></td>
-		</tr>
-		<% }
-	   });
+	<% personalLiceo.forEach (function(info) {
+			if (arrInasistencias[info.cedula] && arrInasistencias[info.cedula][info.TipoCargo()] && arrInasistencias[info.cedula][info.TipoCargo()]['I']) {
+
+				for (var InasCausId in arrInasistencias[info.cedula][info.TipoCargo()]['I']) {
+					for (var CicloPago in arrInasistencias[info.cedula][info.TipoCargo()]['I'][InasCausId]) {
+						hayPersonal=1;
+						dias  = arrInasistencias[info.cedula][info.TipoCargo()]['I'][InasCausId][CicloPago].dias;
+						horas = arrInasistencias[info.cedula][info.TipoCargo()]['I'][InasCausId][CicloPago].horas;
+						if (dias==0 && horas==0) {
+							continue;
+						}
+						dias_semana = trabaja_sabado ? 6 : 5;
+						str="-";
+						if (dias > 0) {
+							str=str+dias+" día"+(dias>1 ? "s" : "")+(horas > 0 ? " y " : "");
+						}
+						if (dias == 0 || horas > 0) {
+							str=str+horas+" hora"+(horas>1 ? "s" : "");
+						}
+						if (dias > 0 && info.tipo != 2) {
+							str=str+"= -"+ (Math.floor(dias * (info.horas/dias_semana)) + horas)+" horas";
+						} else if (horas > 0 && info.tipo == 2) {
+							str=str+"= -"+(Math.floor(horas / (info.horas/dias_semana)) + dias)+" días";
+						}
+						str=str+(InasCausId == "SA" ? " (x2)" : ""); -%>
+						<tr>
+							<td><%= info.cedula %></td>
+							<td><%= info.PerNombreCompleto %></td>
+							<td><%= info.horas %> horas</td>
+							<td><%= info.cargo %><% if (CicloPago!="null") {%>, ciclo <%= CicloPago %><% } %></td>
+							<td><%= InasCausId %></td>
+							<td><%= str -%></td>
+						</tr><%
+
+					}
+				}
+			}
+		});
 	   if (!hayPersonal) { %>
 		<tr><td>No hay personal que cumpla este criterio</td></tr>
 	<% } %>
@@ -180,30 +176,29 @@
   <% hayPersonal=0 %>
   <div class="panel-body">
 	<table class="table">
-	<% personalLiceo.forEach (function(info) { -%>
-		<% if (arrInasistencias[info.cedula] &&
-	 				 arrInasistencias[info.cedula][info.TipoCargo()] &&
-					 arrInasistencias[info.cedula][info.TipoCargo()]['L'] &&
-					 arrInasistencias[info.cedula][info.TipoCargo()]['L'].dias > 0) {
-		   hayPersonal=1 %>
-		<tr>
-			<td><%= info.cedula %></td>
-			<td><%= info.PerNombreCompleto %></td>
-			<td><%= info.horas %> horas</td>
-			<td><%= info.cargo %></td>
-			<td><% if(arrInasistencias[info.cedula] && arrInasistencias[info.cedula][info.TipoCargo()]['L']) { -%>
-						<% dias = arrInasistencias[info.cedula][info.TipoCargo()]['L'].dias -%>
-						<% dias_semana = trabaja_sabado ? 6 : 5 -%>
-					  -
-						<% if (dias > 0) { -%>
-							<%= dias %> día<% if (dias>1) { %>s<% } %>
-						<% } %>
-					<% } %></td>
-		</tr>
-		<% }
+	<% personalLiceo.forEach (function(info) {
+			if (arrInasistencias[info.cedula] && arrInasistencias[info.cedula][info.TipoCargo()] && arrInasistencias[info.cedula][info.TipoCargo()]['L']) {
+				for (var InasCausId in arrInasistencias[info.cedula][info.TipoCargo()]['L']) {
+					for (var CicloPago in arrInasistencias[info.cedula][info.TipoCargo()]['L'][InasCausId]) {
+						dias = arrInasistencias[info.cedula][info.TipoCargo()]['L'][InasCausId][CicloPago].dias;
+						if (dias == 0) {
+							continue;
+						}
+						hayPersonal=1;
+						str="-"+dias+" día"+(dias>1 ? "s" : ""); -%>
+						<tr>
+							<td><%= info.cedula %></td>
+							<td><%= info.PerNombreCompleto %></td>
+							<td><%= info.horas %> horas</td>
+							<td><%= info.cargo %><% if (CicloPago!="null") {%>, ciclo <%= CicloPago %><% } %></td>
+							<td><%= str %></td>
+						</tr><%
+					}
+				}
+			}
 	   });
-	   if (!hayPersonal) { %>
-		<tr><td>No hay personal que cumpla este criterio</td></tr>
+	   if (!hayPersonal) { -%>
+			 <tr><td>No hay personal que cumpla este criterio</td></tr>
 	<% } %>
 	</table>
   </div>

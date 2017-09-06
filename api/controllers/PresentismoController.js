@@ -209,7 +209,7 @@ module.exports = {
 		wsPortal.getSession(sessionid, function(err,session) {
 			if (sails.config.environment === "development") {
 				err = undefined;
-				session = {Sesionesid:1,Userid:'u19724241',Dependid:4300,Lugarid:4300};
+				session = {Sesionesid:1,Userid:'u19724241',Dependid:251,Lugarid:251};
 			}
 			if (err) {
 				return res.forbidden(err);
@@ -294,11 +294,17 @@ module.exports = {
 						if (!arrInasistencias[info.perdocid][info.InasisLicTipo]) {
 							arrInasistencias[info.perdocid][info.InasisLicTipo] = Array();
 						}
-						if (typeof arrInasistencias[info.perdocid][info.InasisLicTipo][info.InasCausTipo]==='undefined') {
-							arrInasistencias[info.perdocid][info.InasisLicTipo][info.InasCausTipo] = {horas:0, dias:0};
+						if (!arrInasistencias[info.perdocid][info.InasisLicTipo][info.InasCausTipo]) {
+							arrInasistencias[info.perdocid][info.InasisLicTipo][info.InasCausTipo] = Array();
 						}
-						arrInasistencias[info.perdocid][info.InasisLicTipo][info.InasCausTipo].horas += info.horas;
-						arrInasistencias[info.perdocid][info.InasisLicTipo][info.InasCausTipo].dias  += info.dias;
+						if (!arrInasistencias[info.perdocid][info.InasisLicTipo][info.InasCausTipo][info.InasCausId]) {
+							arrInasistencias[info.perdocid][info.InasisLicTipo][info.InasCausTipo][info.InasCausId] = Array();
+						}
+						if (typeof arrInasistencias[info.perdocid][info.InasisLicTipo][info.InasCausTipo][info.InasCausId][info.CicloPago]==='undefined') {
+							arrInasistencias[info.perdocid][info.InasisLicTipo][info.InasCausTipo][info.InasCausId][info.CicloPago] = {horas:0, dias:0};
+						}
+						arrInasistencias[info.perdocid][info.InasisLicTipo][info.InasCausTipo][info.InasCausId][info.CicloPago].horas += info.horas;
+						arrInasistencias[info.perdocid][info.InasisLicTipo][info.InasCausTipo][info.InasCausId][info.CicloPago].dias  += info.dias;
 					});
 
 					// obtengo los certificados que faltan en la dependencia

@@ -47,17 +47,21 @@ module.exports = {
     SELECT perdocid,
       InasisLicTipo,
       InasCausTipo,
+      InasCausId,
+      CicloPago,
       sum(horas) horas,
       sum(ifnull(InasisLicId_Dias, dias)) dias
     FROM (
-      SELECT PERSONALPERID,InasisLicTipo,InasisLicFchIni,InasisLicFchFin,InasisLicId,InasCausId,sum(if(InasisLicDiaHora='H',InasisLicCant,0)*if(InasCausId='SA',2,1)) horas,sum(if(InasisLicDiaHora='D',InasisLicCant,0)) dias
+      SELECT PERSONALPERID,InasisLicTipo,InasisLicFchIni,InasisLicFchFin,InasisLicId,InasCausId,if(InasisLicCicloPago is not null,InasisLicCicloPago,RelLabCicloPago) CicloPago,sum(if(InasisLicDiaHora='H',InasisLicCant,0)) horas,sum(if(InasisLicDiaHora='D',InasisLicCant,0)) dias
       FROM Personal.INASISLIC
       JOIN FUNCIONES_ASIGNADAS USING (FuncAsignadaId)
       JOIN SILLAS USING (SillaId)
+      LEFT JOIN FUNCIONES_RELACION_LABORAL USING (FuncAsignadaId)
+      LEFT JOIN RELACIONES_LABORALES RL USING (RelLabId,PersonalPerId)
       WHERE SillaDependId=?
         AND InasisLicFchFin>=?
         AND InasisLicFchIni<=?
-      GROUP BY PERSONALPERID,InasisLicTipo,InasisLicFchIni,InasisLicFchFin,InasisLicId,InasCausId
+      GROUP BY 1,2,3,4,5,6,7
     ) I
     JOIN INASCAUSALES USING (InasCausId)
     JOIN Personas.PERSONASDOCUMENTOS ON personalperid=perid and paiscod="UY" and doccod="CI"
