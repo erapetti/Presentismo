@@ -24,7 +24,7 @@ module.exports = {
 		wsPortal.getSession(sessionid, function(err,session) {
 			if (sails.config.environment === "development") {
 				err = undefined;
-				session = {Sesionesid:1,Userid:'u19724241',Dependid:1614,Lugarid:1614};
+				session = {Sesionesid:1,Userid:'u19724241',Dependid:1072,Lugarid:1072};
 			}
 			if (err) {
 				return res.forbidden(err);
@@ -50,7 +50,7 @@ module.exports = {
 				infoMeses.meses[m] = {
 					nombre: meses[m],
 					inhabilitado: (m >= mesActual),
-					fecha: new Date(anio+"-"+(m+1)+"-09 GMT-0300")
+					fecha: new Date(anio+"-"+(m+1)+"-09 23:59:59 GMT-0300")
 				};
 				infoMeses.meses[m].estado = (now > infoMeses.meses[m].fecha.getTime() ? "Vencido" : "Vencimiento");
 			}
@@ -230,7 +230,7 @@ module.exports = {
 				infoMeses.meses[m] = {
 					nombre: meses[m],
 					inhabilitado: ((m < 7) || (m >= mesActual)),
-					fecha: new Date(anio+"-"+(m+1)+"-09 GMT-0300")
+					fecha: new Date(anio+"-"+(m+1)+"-09 23:59:59 GMT-0300")
 				};
 				infoMeses.meses[m].estado = (now > infoMeses.meses[m].fecha.getTime() ? "Vencido" : "Vencimiento");
 			}
