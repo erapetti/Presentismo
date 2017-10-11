@@ -156,16 +156,16 @@ module.exports = {
 				//return res.negotiate(err);
 			}
 
-			var meses = ['','enero','febrero','marzo','abril','mayo','junio',
-						 'julio','agosto','setiembre','octubre','noviembre','diciembre'];
+			var meses = ['','ene','feb','mar','abr','may','jun',
+						 'jul','ago','set','oct','nov','dic'];
 			var mes = parseInt(req.param('mes'));
 
 			var d = new Date();
 			var mesActual = d.getMonth()+1;
 			var anio = d.getFullYear();
-			if (mesActual < 3) {
-				anio = anio - 1;
-			}
+//			if (mesActual < 3) {
+//				anio = anio - 1;
+//			}
 
 			var sprintf = require("sprintf");
 
@@ -175,7 +175,7 @@ module.exports = {
 				}
 
 				var infoMeses = {meses:Array()};
-				for (var m=3;m<12;m++) {
+				for (var m=1;m<=mesActual;m++) {
 					infoMeses.meses[m] = { nombre: meses[m], depend:Array() };
 				}
 				infoMeses.fecha_toString = function(d) {return sprintf("%02d/%02d/%04d", d.getDate(),d.getMonth()+1,d.getFullYear())};
@@ -187,10 +187,23 @@ module.exports = {
 					}
 
 					presentismo.forEach (function(info){
-						infoMeses.meses[info.mes].depend[info.DependId] = info.updatedAt;
+						infoMeses.meses[info.mes].depend[info.DependId] = [info.updatedAt];
 					});
 
-					return res.view({title:title,depends:depends, infoMeses:infoMeses})
+					Multas.find({DependId:arrDepends, anio:anio}).exec(function(err, multas) {
+						if (err) {
+							return res.serverError(err);
+						}
+
+						multas.forEach (function(info){
+							if (typeof infoMeses.meses[info.mes].depend[info.DependId] === 'undefined') {
+								infoMeses.meses[info.mes].depend[info.DependId] = Array();
+							}
+							infoMeses.meses[info.mes].depend[info.DependId][1] = info.updatedAt;
+						});
+
+						return res.view({title:title,depends:depends, infoMeses:infoMeses});
+					});
 				});
 			});
 		});

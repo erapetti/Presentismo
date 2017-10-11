@@ -1,6 +1,6 @@
 <div id="heading" class="jumbotron">
-<h1>Cierres pendientes para presentismo</h1>
-<p>Este listado resume el estado de los cierres mensuales para presentismo de cada dependencia a la cual tiene acceso.</p>
+<h1>Cierres pendientes de presentismo y multas</h1>
+<p>Este listado resume el estado de los cierres mensuales para presentismo y multas de cada dependencia a la cual tiene acceso.</p>
 <p>Las cruces rojas indican que no se ha enviado el cierre para la dependencia y mes asociado.</p>
 </div>
 
@@ -17,21 +17,40 @@
 <table class="table">
 		<tr>
 			<th>Dependencia</th>
-			<% for(m=3;m<12;m++) { -%>
+			<th></th>
+			<% d = new Date(); mesActual = d.getMonth()+1 %>
+			<% for(m=1;m<=mesActual;m++) { -%>
 				<th class="center" width="70px"><%= infoMeses.meses[m].nombre %></th>
 			<% } %>
 		</tr>
     <% depends.forEach (function(info) { -%>
     <tr>
-	    <td><%= info.dependdesc %></td>
-			<% for(m=3;m<12;m++) { -%>
-			<td class="center"><% if (typeof infoMeses.meses[m].depend[info.dependid] !== 'undefined') { %>
+	    <td rowspan="2"><%= info.dependdesc %></td>
+			<td>(presentismo)</td>
+			<td></td>
+			<td></td>
+			<% for(m=3;m<mesActual;m++) { -%>
+			<td class="center"><% if (typeof infoMeses.meses[m].depend[info.dependid] !== 'undefined' && typeof infoMeses.meses[m].depend[info.dependid][0] !== 'undefined') { %>
 						<span class="glyphicon glyphicon-ok text-success"></span>
 					<% } else { %>
 						<span class="glyphicon glyphicon-remove text-danger"></span>
 					<% } %>
 			</td>
 			<% } %>
+			<td></td>
+		</tr>
+		<tr>
+			<td>(multas)</td>
+			<td></td><td></td><td></td><td></td><td></td><td></td>
+			<% for(m=7;m<=mesActual;m++) { -%>
+			<td class="center"><% if (typeof infoMeses.meses[m].depend[info.dependid] != 'undefined' && typeof infoMeses.meses[m].depend[info.dependid][1] !== 'undefined') { %>
+						<span class="glyphicon glyphicon-ok text-success"></span>
+					<% } else { %>
+						<span class="glyphicon glyphicon-remove text-danger"></span>
+					<% } %>
+			</td>
+			<% } %>
+		</tr>
 
 	<% }) -%>
 </table>
