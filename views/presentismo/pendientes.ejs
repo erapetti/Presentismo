@@ -19,7 +19,7 @@
 			<th>Dependencia</th>
 			<th></th>
 			<% d = new Date(); mesActual = d.getMonth()+1 %>
-			<% for(m=1;m<=mesActual;m++) { -%>
+			<% for(m=1;m<mesActual;m++) { -%>
 				<th class="center" width="70px"><%= infoMeses.meses[m].nombre %></th>
 			<% } %>
 		</tr>
@@ -42,7 +42,7 @@
 		<tr>
 			<td>(multas)</td>
 			<td></td><td></td><td></td><td></td><td></td><td></td>
-			<% for(m=7;m<=mesActual;m++) { -%>
+			<% for(m=7;m<mesActual;m++) { -%>
 			<td class="center"><% if (typeof infoMeses.meses[m].depend[info.dependid] != 'undefined' && typeof infoMeses.meses[m].depend[info.dependid][1] !== 'undefined') { %>
 						<span class="glyphicon glyphicon-ok text-success"></span>
 					<% } else { %>

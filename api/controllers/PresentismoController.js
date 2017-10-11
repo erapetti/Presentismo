@@ -175,7 +175,7 @@ module.exports = {
 				}
 
 				var infoMeses = {meses:Array()};
-				for (var m=1;m<=mesActual;m++) {
+				for (var m=1;m<mesActual;m++) {
 					infoMeses.meses[m] = { nombre: meses[m], depend:Array() };
 				}
 				infoMeses.fecha_toString = function(d) {return sprintf("%02d/%02d/%04d", d.getDate(),d.getMonth()+1,d.getFullYear())};
