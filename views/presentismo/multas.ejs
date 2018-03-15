@@ -30,7 +30,7 @@
 						<a<% if (!infoMeses.meses[m].inhabilitado) { %> href="<% if (sails.config.environment != 'development') { %>/node/presentismo/multas<% } %>?mes=<%= m %>"<% } %>><%= infoMeses.meses[m].nombre %></a>
 					</li>
 				</ul>
-				<p><%if (m < 7) {%>Informar por SECLI<%} else if (infoMeses.meses[m].inhabilitado) {%>Aún no está habilitado<%} else { %><%= infoMeses.meses[m].estado %>: <%= infoMeses.fecha_toString(infoMeses.meses[m].fecha) %><%}%></p>
+				<p><% if (infoMeses.meses[m].inhabilitado) { %>Aún no está habilitado<% } else { %><%= infoMeses.meses[m].estado %>: <%= infoMeses.fecha_toString(infoMeses.meses[m].fecha) %><% } %></p>
 				<% if (infoMeses.mes.id==m && infoMeses.meses[m].estado!="Presentado") { -%>
 					<button type="submit" name="cerrar" value="<%= m %>" class="btn btn-success">Cerrar el mes de <%= infoMeses.meses[m].nombre %></button>
 				<% } else if (infoMeses.mes.id==m && infoMeses.meses[m].estado=="Presentado") { -%>
