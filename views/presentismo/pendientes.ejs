@@ -15,6 +15,7 @@
 <% } -%>
 
 <table class="table">
+   <thead>
 		<tr>
 			<th>Dependencia</th>
 			<th></th>
@@ -23,6 +24,8 @@
 				<th class="center" width="70px"><%= infoMeses.meses[m].nombre %></th>
 			<% } %>
 		</tr>
+   </thead>
+   <tbody>
     <% depends.forEach (function(info) { -%>
     <tr>
 	    <td rowspan="2"><%= info.dependdesc %></td>
@@ -37,12 +40,10 @@
 					<% } %>
 			</td>
 			<% } %>
-			<td></td>
 		</tr>
 		<tr>
 			<td>(multas)</td>
-			<td></td><td></td><td></td><td></td><td></td><td></td>
-			<% for(m=7;m<mesActual;m++) { -%>
+			<% for(m=1;m<mesActual;m++) { -%>
 			<td class="center"><% if (typeof infoMeses.meses[m].depend[info.dependid] != 'undefined' && typeof infoMeses.meses[m].depend[info.dependid][1] !== 'undefined') { %>
 						<span class="glyphicon glyphicon-ok text-success"></span>
 					<% } else { %>
@@ -53,6 +54,7 @@
 		</tr>
 
 	<% }) -%>
+   </tbody>
 </table>
 
 </div>
