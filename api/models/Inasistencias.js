@@ -21,7 +21,7 @@ module.exports = {
 	get: function(data,callback) {
 		return Inasistencias.query(`
     SELECT perdocid,
-      InasisLicTipo,
+      if(InasisLicTipo='',if(funcionid=100,'DD','DI'),InasisLicTipo) InasisLicTipo,
       IF(inascauspres=3, greatest(0,ifnull(max(InasisLicId_Dias),1)-2), ifnull(max(InasisLicId_Dias),1)) inasistencias
     FROM (
     	SELECT *
@@ -31,13 +31,13 @@ module.exports = {
     	WHERE SillaDependId=?
     	  AND InasisLicFchFin>=?
     	  AND InasisLicFchIni<=?
-    	GROUP BY PERSONALPERID,INASISLICID
+    	GROUP BY PERSONALPERID,InasisLicTipo,InasisLicFchIni,InasisLicFchFin,INASISLICID
     ) I
     JOIN INASCAUSALES USING (InasCausId)
     JOIN Personas.PERSONASDOCUMENTOS ON personalperid=perid and paiscod="UY" and doccod="CI"
     LEFT JOIN INASISLIC_LICENCIA_DIAS ID on ID.InasisLicId=I.InasisLicId and ID.PersonalPerId=I.PersonalPerId and ID.InasisLicId_Mes=? and ID.InasisLicId_Anio=?
     WHERE inascauspres<>0
-    GROUP BY perdocid,InasisLicTipo,InasisLicFchIni,InasisLicFchFin`
+    GROUP BY I.PERSONALPERID,I.InasisLicTipo,I.InasisLicFchIni,I.InasisLicFchFin`
       ,
 		  [data.DependId, data.Anio+'-'+data.Mes+'-01', data.Anio+'-'+data.Mes+'-31', data.Mes, data.Anio],
 		  callback);
