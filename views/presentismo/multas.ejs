@@ -148,7 +148,7 @@
 			<th>Cédula</th>
 			<th>Nombre</th>
 			<th>Carga Horaria</th>
-			<th>Cargo y Ciclo de Pago</th>
+			<th>Cargo</th>
 			<th>Causal</th>
 			<th>Multa</th>
 		</tr>
@@ -181,9 +181,9 @@
 							<td><%= info.cedula %></td>
 							<td><%= info.PerNombreCompleto %></td>
 							<td><%= info.horas %> horas</td>
-							<td><%= info.cargo %><% if (CicloPago!="null") {%>, ciclo <%= CicloPago %><% } %></td>
+							<td><%= info.cargo %></td>
 							<td><%= InasCausId %></td>
-							<td><%= str -%></td>
+							<td><%= str %><% if (CicloPago!="null") {%> ciclo <%= CicloPago %><% } %></td>
 						</tr><%
 
 					}
@@ -207,7 +207,7 @@
 				<th>Cédula</th>
 				<th>Nombre</th>
 				<th>Carga Horaria</th>
-				<th>Cargo y Ciclo de Pago</th>
+				<th>Cargo</th>
 				<th>Causal</th>
 				<th>Multa</th>
 			</tr>
@@ -225,8 +225,8 @@
 							<td><%= info.cedula %></td>
 							<td><%= info.PerNombreCompleto %></td>
 							<td><%= info.horas %> horas</td>
-							<td><%= info.cargo %><% if (CicloPago!="null") {%>, ciclo <%= CicloPago %><% } %></td>
-							<td><%= str %></td>
+							<td><%= info.cargo %></td>
+							<td><%= str %><% if (CicloPago!="null") {%> ciclo <%= CicloPago %><% } %></td>
 						</tr><%
 					}
 				}
