@@ -214,7 +214,7 @@ module.exports = {
 		wsPortal.getSession(sessionid, function(err,session) {
 			if (sails.config.environment === "development") {
 				err = undefined;
-				session = {Sesionesid:1,Userid:'u19724241',Dependid:1023,Lugarid:1023};
+				session = {Sesionesid:1,Userid:'u19724241',Dependid:1072,Lugarid:1072};
 			}
 			if (err) {
 				return res.forbidden(err);
