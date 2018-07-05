@@ -113,21 +113,13 @@ module.exports = {
 							return res.serverError(err);
 						}
 
-						// mapeo la dependencia desde el corporativo al AS400
-						Personal.MapeoDependencia({idcorp:session.Dependid}, function(err, mapeo) {
+						// obtengo las personas de la dependencia:
+						Personal.get({Anio:anio,Mes:mes,DependId:session.Dependid}, function(err, personalLiceo) {
 							if (err) {
 								return res.serverError(err);
 							}
 
-							// obtengo las personas de la dependencia:
-							Personal.find({Anio:anio,Mes:mes,DependId:typeof mapeo[0] !== 'undefined' ? mapeo[0].idas400 : session.Dependid}).sort('PerNombreCompleto ASC').exec(function(err, personalLiceo) {
-								if (err) {
-									return res.serverError(err);
-								}
-
-								return res.view({title:title, arrInasistencias:arrInasistencias, personalLiceo:personalLiceo, infoMeses:infoMeses, DependId:session.Dependid, presentismo:presentismo, certificados:certificados});
-							});
-
+							return res.view({title:title, arrInasistencias:arrInasistencias, personalLiceo:personalLiceo, infoMeses:infoMeses, DependId:session.Dependid, presentismo:presentismo, certificados:certificados});
 						});
 					});
 				});
@@ -326,26 +318,19 @@ module.exports = {
 							return res.serverError(err);
 						}
 
-						// mapeo la dependencia desde el corporativo al AS400
-						Personal.MapeoDependencia({idcorp:session.Dependid}, function(err, mapeo) {
+						// obtengo las personas de la dependencia:
+						Personal.get({Anio:anio,Mes:mes,DependId:session.Dependid,activo:'S'}, function(err, personalLiceo) {
 							if (err) {
 								return res.serverError(err);
 							}
 
-							// obtengo las personas de la dependencia:
-							Personal.find({Anio:anio,Mes:mes,DependId:typeof mapeo[0] !== 'undefined' ? mapeo[0].idas400 : session.Dependid,activo:'S'}).sort('PerNombreCompleto ASC').exec(function(err, personalLiceo) {
+							// averiguo si este liceo trabaja los sábados:
+							Estudiantil.liceo_sabado({DependId:session.Dependid,Anio:anio,Mes:mes},function(err,trabaja_sabado){
 								if (err) {
 									return res.serverError(err);
 								}
 
-								// averiguo si este liceo trabaja los sábados:
-								Estudiantil.liceo_sabado({DependId:session.Dependid,Anio:anio,Mes:mes},function(err,trabaja_sabado){
-									if (err) {
-										return res.serverError(err);
-									}
-
-									return res.view({title:title,arrInasistencias:arrInasistencias, personalLiceo:personalLiceo, infoMeses:infoMeses, DependId:session.Dependid, certificados:certificados, trabaja_sabado:trabaja_sabado});
-								});
+								return res.view({title:title,arrInasistencias:arrInasistencias, personalLiceo:personalLiceo, infoMeses:infoMeses, DependId:session.Dependid, certificados:certificados, trabaja_sabado:trabaja_sabado});
 							});
 						});
 					});

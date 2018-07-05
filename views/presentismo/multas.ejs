@@ -105,16 +105,16 @@
 			<th>Inasistencias</th>
 		</tr>
 	<% personalLiceo.forEach (function(info) { -%>
-		<% var sinmulta = (!arrInasistencias[info.cedula] || !arrInasistencias[info.cedula][info.TipoCargo()]);
+		<% var sinmulta = (!arrInasistencias[info.cedula] || !arrInasistencias[info.cedula][info.TipoCargo]);
 		   if (!sinmulta) {
 				 // Tengo que recorrer todos los causales y ciclos de pago para comprobar que están todos en cero, entonces está sin multa
 				 sinmulta=true;
-				 for (var InasCausTipo in arrInasistencias[info.cedula][info.TipoCargo()]) {
-					 for (var InasCausId in arrInasistencias[info.cedula][info.TipoCargo()][InasCausTipo]) {
-						 for (var CicloPago in arrInasistencias[info.cedula][info.TipoCargo()][InasCausTipo][InasCausId]) {
+				 for (var InasCausTipo in arrInasistencias[info.cedula][info.TipoCargo]) {
+					 for (var InasCausId in arrInasistencias[info.cedula][info.TipoCargo][InasCausTipo]) {
+						 for (var CicloPago in arrInasistencias[info.cedula][info.TipoCargo][InasCausTipo][InasCausId]) {
 							 sinmulta = sinmulta
-							            && arrInasistencias[info.cedula][info.TipoCargo()][InasCausTipo][InasCausId][CicloPago].horas==0
-							            && arrInasistencias[info.cedula][info.TipoCargo()][InasCausTipo][InasCausId][CicloPago].dias==0;
+							            && arrInasistencias[info.cedula][info.TipoCargo][InasCausTipo][InasCausId][CicloPago].horas==0
+							            && arrInasistencias[info.cedula][info.TipoCargo][InasCausTipo][InasCausId][CicloPago].dias==0;
 						 }
 					 }
 			 	 }
@@ -153,13 +153,13 @@
 			<th>Multa</th>
 		</tr>
 	<% personalLiceo.forEach (function(info) {
-			if (arrInasistencias[info.cedula] && arrInasistencias[info.cedula][info.TipoCargo()] && arrInasistencias[info.cedula][info.TipoCargo()]['I']) {
+			if (arrInasistencias[info.cedula] && arrInasistencias[info.cedula][info.TipoCargo] && arrInasistencias[info.cedula][info.TipoCargo]['I']) {
 
-				for (var InasCausId in arrInasistencias[info.cedula][info.TipoCargo()]['I']) {
-					for (var CicloPago in arrInasistencias[info.cedula][info.TipoCargo()]['I'][InasCausId]) {
+				for (var InasCausId in arrInasistencias[info.cedula][info.TipoCargo]['I']) {
+					for (var CicloPago in arrInasistencias[info.cedula][info.TipoCargo]['I'][InasCausId]) {
 						hayPersonal=1;
-						dias  = arrInasistencias[info.cedula][info.TipoCargo()]['I'][InasCausId][CicloPago].dias;
-						horas = arrInasistencias[info.cedula][info.TipoCargo()]['I'][InasCausId][CicloPago].horas;
+						dias  = arrInasistencias[info.cedula][info.TipoCargo]['I'][InasCausId][CicloPago].dias;
+						horas = arrInasistencias[info.cedula][info.TipoCargo]['I'][InasCausId][CicloPago].horas;
 						if (dias==0 && horas==0) {
 							continue;
 						}
@@ -212,10 +212,10 @@
 				<th>Multa</th>
 			</tr>
 	<% personalLiceo.forEach (function(info) {
-			if (arrInasistencias[info.cedula] && arrInasistencias[info.cedula][info.TipoCargo()] && arrInasistencias[info.cedula][info.TipoCargo()]['L']) {
-				for (var InasCausId in arrInasistencias[info.cedula][info.TipoCargo()]['L']) {
-					for (var CicloPago in arrInasistencias[info.cedula][info.TipoCargo()]['L'][InasCausId]) {
-						dias = arrInasistencias[info.cedula][info.TipoCargo()]['L'][InasCausId][CicloPago].dias;
+			if (arrInasistencias[info.cedula] && arrInasistencias[info.cedula][info.TipoCargo] && arrInasistencias[info.cedula][info.TipoCargo]['L']) {
+				for (var InasCausId in arrInasistencias[info.cedula][info.TipoCargo]['L']) {
+					for (var CicloPago in arrInasistencias[info.cedula][info.TipoCargo]['L'][InasCausId]) {
+						dias = arrInasistencias[info.cedula][info.TipoCargo]['L'][InasCausId][CicloPago].dias;
 						if (dias == 0) {
 							continue;
 						}

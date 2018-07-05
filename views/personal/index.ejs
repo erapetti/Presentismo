@@ -6,15 +6,15 @@
   <div class="panel-body">
 	<table class="table">
 	<% personalLiceo.forEach (function(info) { -%>
-		<% if (info.activo=="S" && (!arrInasistencias[ info.cedula ] || !arrInasistencias[ info.cedula ][ info.TipoCargo() ] || arrInasistencias[ info.cedula ][ info.TipoCargo() ]<2)) {
+		<% if (info.activo=="S" && (!arrInasistencias[ info.cedula ] || !arrInasistencias[ info.cedula ][ info.TipoCargo ] || arrInasistencias[ info.cedula ][ info.TipoCargo ]<2)) {
 		   hayPersonal=1 %>
 		<tr>
 			<td><%= info.cedula %></td>
 			<td><%= info.PerNombreCompleto %></td>
 			<td><%= info.horas %> horas</td>
 			<td><%= info.cargo %></td>
-			<td><% if(arrInasistencias[ info.cedula ] && arrInasistencias[ info.cedula ][ info.TipoCargo() ]) { %>
-			  <%= arrInasistencias[ info.cedula ][ info.TipoCargo() ] %> FALTA
+			<td><% if(arrInasistencias[ info.cedula ] && arrInasistencias[ info.cedula ][ info.TipoCargo ]) { %>
+			  <%= arrInasistencias[ info.cedula ][ info.TipoCargo ] %> FALTA
 			<% } else { %>
 			  SIN FALTAS
 			<% } %></td>
@@ -36,15 +36,15 @@
   <div class="panel-body">
 	<table class="table">
 	<% personalLiceo.forEach (function(info) { -%>
-		<% if (info.activo=="S" && arrInasistencias[ info.cedula ] && arrInasistencias[ info.cedula ][ info.TipoCargo() ] && arrInasistencias[ info.cedula ][ info.TipoCargo() ]>=2) {
+		<% if (info.activo=="S" && arrInasistencias[ info.cedula ] && arrInasistencias[ info.cedula ][ info.TipoCargo ] && arrInasistencias[ info.cedula ][ info.TipoCargo ]>=2) {
 		   hayPersonal=1 %>
 		<tr>
 			<td><%= info.cedula %></td>
 			<td><%= info.PerNombreCompleto %></td>
 			<td><%= info.horas %> horas</td>
 			<td><%= info.cargo %></td>
-			<td><% if(arrInasistencias[ info.cedula ] && arrInasistencias[ info.cedula ][ info.TipoCargo() ]) { %>
-			  <%= arrInasistencias[ info.cedula ][ info.TipoCargo() ] %> FALTAS
+			<td><% if(arrInasistencias[ info.cedula ] && arrInasistencias[ info.cedula ][ info.TipoCargo ]) { %>
+			  <%= arrInasistencias[ info.cedula ][ info.TipoCargo ] %> FALTAS
 			<% } else { %>
 			  SIN FALTAS
 			<% } %></td>
