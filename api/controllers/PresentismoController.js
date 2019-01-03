@@ -154,10 +154,11 @@ module.exports = {
 
 			var d = new Date();
 			var mesActual = d.getMonth()+1;
-			var anio = d.getFullYear();
-//			if (mesActual < 3) {
-//				anio = anio - 1;
-//			}
+			var anioActual = d.getFullYear()
+			var anio = anioActual;
+			if (mesActual == 1) {
+				anio = anio - 1;
+			}
 
 			var sprintf = require("sprintf");
 
@@ -167,7 +168,7 @@ module.exports = {
 				}
 
 				var infoMeses = {meses:Array()};
-				for (var m=1;m<mesActual;m++) {
+				for (var m=1;m<(mesActual==1 ? 13 : mesActual);m++) {
 					infoMeses.meses[m] = { nombre: meses[m], depend:Array() };
 				}
 				infoMeses.fecha_toString = function(d) {return sprintf("%02d/%02d/%04d", d.getDate(),d.getMonth()+1,d.getFullYear())};
@@ -226,7 +227,11 @@ module.exports = {
 			var now = d.getTime();
 			var diaActual = d.getDate();
 			var mesActual = d.getMonth()+1;
-			var anio = d.getFullYear();
+			var anioActual = d.getFullYear()
+			var anio = anioActual;
+			if (mesActual == 1) {
+				anio = anio - 1;
+			}
 
 			var sprintf = require("sprintf");
 
@@ -234,7 +239,7 @@ module.exports = {
 			for (var m=1;m<=12;m++) {
 				infoMeses.meses[m] = {
 					nombre: meses[m],
-					inhabilitado: ((anio==2017 && m < 7) || (m==mesActual && diaActual<25) || (m > mesActual)),
+					inhabilitado: ((anio==anioActual) && ((m==mesActual && diaActual<25) || (m > mesActual))),
 					fecha: new Date((m<12 ? anio : anio+1)+"-"+(m<12 ? m+1 : 1)+"-09 23:59:59 GMT-0300")
 				};
 				infoMeses.meses[m].estado = (now > infoMeses.meses[m].fecha.getTime() ? "Vencido" : "Vencimiento");
