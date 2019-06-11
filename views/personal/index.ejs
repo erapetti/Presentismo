@@ -6,7 +6,7 @@
   <div class="panel-body">
 	<table class="table">
 	<% personalLiceo.forEach (function(info) { -%>
-		<% if (info.activo=="S" && !(info.cargo=="BECARIOS" || info.cargo=="PASANTES") && (!arrInasistencias[ info.cedula ] || !arrInasistencias[ info.cedula ][ info.TipoCargo ] || arrInasistencias[ info.cedula ][ info.TipoCargo ]<2)) {
+		<% if (info.activo=="S" && !(info.cargo=="BECARIOS" || info.cargo=="PASANTES"  || info.cargo=="SUBSIDIO AUTORIDADES CESANTES" || info.cargo=="Funcionarios externos sin básicos en CES") && (!arrInasistencias[ info.cedula ] || !arrInasistencias[ info.cedula ][ info.TipoCargo ] || arrInasistencias[ info.cedula ][ info.TipoCargo ]<2)) {
 		   hayPersonal=1 %>
 		<tr>
 			<td><%= info.cedula %></td>
@@ -36,7 +36,7 @@
   <div class="panel-body">
 	<table class="table">
 	<% personalLiceo.forEach (function(info) { -%>
-		<% if (info.activo=="S" && !(info.cargo=="BECARIOS" || info.cargo=="PASANTES") && arrInasistencias[ info.cedula ] && arrInasistencias[ info.cedula ][ info.TipoCargo ] && arrInasistencias[ info.cedula ][ info.TipoCargo ]>=2) {
+		<% if (info.activo=="S" && !(info.cargo=="BECARIOS" || info.cargo=="PASANTES" || info.cargo=="SUBSIDIO AUTORIDADES CESANTES" || info.cargo=="Funcionarios externos sin básicos en CES") && arrInasistencias[ info.cedula ] && arrInasistencias[ info.cedula ][ info.TipoCargo ] && arrInasistencias[ info.cedula ][ info.TipoCargo ]>=2) {
 		   hayPersonal=1 %>
 		<tr>
 			<td><%= info.cedula %></td>
@@ -60,13 +60,13 @@
 
 <a id="inactivos" name="inactivos"></a>
 <div class="panel panel-default">
-  <div class="panel-heading">Personal del liceo que no completó el mes de actividad, pasantes y becarios (no cobran la compensación por presentismo de este mes):</div>
+  <div class="panel-heading">Personal del liceo que no completó el mes de actividad, pasantes, becarios y otros que no cobran la compensación por presentismo de este mes:</div>
 
   <% hayPersonal=0 %>
   <div class="panel-body">
 	<table class="table">
 	<% personalLiceo.forEach (function(info) { -%>
-		<% if (info.activo!="S" || info.cargo=="BECARIOS" || info.cargo=="PASANTES") {
+		<% if (info.activo!="S" || info.cargo=="BECARIOS" || info.cargo=="PASANTES"  || info.cargo=="SUBSIDIO AUTORIDADES CESANTES" || info.cargo=="Funcionarios externos sin básicos en CES") {
 		   hayPersonal=1 %>
 		<tr>
 			<td><%= info.cedula %></td>
