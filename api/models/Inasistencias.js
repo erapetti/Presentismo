@@ -24,20 +24,20 @@ module.exports = {
       if(InasisLicTipo='',if(funcionid=100,'DD','DI'),InasisLicTipo) InasisLicTipo,
       IF(inascauspres=3, greatest(0,ifnull(max(InasisLicId_Dias),1)-2), ifnull(max(InasisLicId_Dias),1)) inasistencias
     FROM (
-    	SELECT *
+    	SELECT PERSONALPERID,InasisLicTipo,InasisLicFchIni,InasisLicFchFin,INASISLICID,InasCausId,funcionid
     	FROM Personal.INASISLIC
     	JOIN FUNCIONES_ASIGNADAS USING (FuncAsignadaId)
     	JOIN SILLAS USING (SillaId)
     	WHERE SillaDependId=?
     	  AND InasisLicFchFin>=?
     	  AND InasisLicFchIni<=?
-    	GROUP BY PERSONALPERID,InasisLicTipo,InasisLicFchIni,InasisLicFchFin,INASISLICID
+    	GROUP BY PERSONALPERID,InasisLicTipo,InasisLicFchIni,InasisLicFchFin,INASISLICID,InasCausId,funcionid
     ) I
     JOIN INASCAUSALES USING (InasCausId)
     JOIN Personas.PERSONASDOCUMENTOS ON personalperid=perid and paiscod="UY" and doccod="CI"
     LEFT JOIN INASISLIC_LICENCIA_DIAS ID on ID.InasisLicId=I.InasisLicId and ID.PersonalPerId=I.PersonalPerId and ID.InasisLicId_Mes=? and ID.InasisLicId_Anio=?
     WHERE inascauspres<>0
-    GROUP BY I.PERSONALPERID,I.InasisLicTipo,I.InasisLicFchIni,I.InasisLicFchFin`
+    GROUP BY I.PERSONALPERID,I.InasisLicTipo,I.InasisLicFchIni,I.InasisLicFchFin,funcionid,inascauspres`
       ,
 		  [data.DependId, data.Anio+'-'+data.Mes+'-01', data.Anio+'-'+data.Mes+'-31', data.Mes, data.Anio],
 		  callback);
