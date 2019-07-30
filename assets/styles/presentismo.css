@@ -18,7 +18,10 @@ div#content div.panel-body { overflow:auto }
 div#content table.table tr:first-child th { border:0 }
 div#content table.table tr:first-child td { border:0 }
 
-div#pendientes table { background-color:#fff; width:90%; margin-left:auto; margin-right:auto; }
+div#pendientes table { background-color:#fff; width:90%; margin-left:3rem; margin-right:3rem; }
+div#pendientes ul.nav { margin-left:3rem; }
+div#pendientes ul.nav > li > a { margin-left:0 }
+
 
 
 div#heading_multas { padding:2em;margin:1em 0;background-color:transparent;overflow:hidden }

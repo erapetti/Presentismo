@@ -14,6 +14,8 @@
 </div>
 <% } -%>
 
+<ul class="nav nav-pills"><li role="presentation"><a href="#" id="soloErrores">Mostrar solo con error en el último mes</a></li></ul>
+
 <table class="table">
    <thead>
 		<tr>
@@ -28,7 +30,7 @@
    <tbody>
     <% depends.forEach (function(info) { -%>
     <tr>
-	    <td rowspan="2"><%= info.dependdesc %></td>
+	    <td><%= info.dependdesc %></td>
 			<td>(presentismo)</td>
 			<% for(m=1;m<(mesActual==1 ? 13 : mesActual);m++) { -%>
 				<% if (m<3 || m>11) { -%>
@@ -44,6 +46,7 @@
 			<% } %>
 		</tr>
 		<tr>
+			<td><%= info.dependdesc %></td>
 			<td>(multas)</td>
 			<% for(m=1;m<(mesActual==1 ? 13 : mesActual);m++) { -%>
 			<td class="center"><% if (typeof infoMeses.meses[m].depend[info.dependid] != 'undefined' && typeof infoMeses.meses[m].depend[info.dependid][1] !== 'undefined') { %>
