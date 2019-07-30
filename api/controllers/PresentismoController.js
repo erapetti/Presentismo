@@ -210,10 +210,12 @@ module.exports = {
 						}
 
 						multas.forEach (function(info){
-							if (typeof infoMeses.meses[info.mes].depend[info.DependId] === 'undefined') {
-								infoMeses.meses[info.mes].depend[info.DependId] = Array();
+							if (typeof infoMeses.meses[info.mes] !== 'undefined') {
+								if (typeof infoMeses.meses[info.mes].depend[info.DependId] === 'undefined') {
+									infoMeses.meses[info.mes].depend[info.DependId] = Array();
+								}
+								infoMeses.meses[info.mes].depend[info.DependId][1] = info.updatedAt;
 							}
-							infoMeses.meses[info.mes].depend[info.DependId][1] = info.updatedAt;
 						});
 
 						return res.view({title:title,depends:depends, infoMeses:infoMeses});
