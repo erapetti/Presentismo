@@ -33,8 +33,8 @@ module.exports = {
       where SGU.userid=?
         and SGU.dependid=2710
         and SGU.grupid='G_INASISTENCIAS Y LICENCIAS_RRHH'
-        and SGU.GrupUsrStatusFchIni<=curdate()
-        and SGU.GrupUsrStatusFchFin>=curdate()
+        and (ifnull(SGU.GrupUsrStatusFchIni,'1000-01-01')='1000-01-01' or SGU.GrupUsrStatusFchIni<=curdate())
+        and (ifnull(SGU.GrupUsrStatusFchFin,'1000-01-01')='1000-01-01' or SGU.GrupUsrStatusFchFin>=curdate())
         and a.anio=year(curdate())-if(month(curdate())=1,1,0)
         and a.mes=if(month(curdate())>1,month(curdate())-1,12)
         and a.dependid=D.dependid
