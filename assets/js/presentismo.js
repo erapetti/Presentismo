@@ -1,5 +1,6 @@
 $('a#soloErrores').click(function(e) {
   e.stopImmediatePropagation();
+  e.preventDefault();
   if ($(this).parent().hasClass("active")) {
     $(this).parent().removeClass("active");
     $('div#pendientes table.table tr:has(td:last-child span.text-success)').show();
