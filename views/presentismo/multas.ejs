@@ -14,6 +14,16 @@
 </div>
 <% } -%>
 
+<% if (cambio_dependencia) { %>
+<form method="GET">
+<p>Dependencia: <select name="dependid" onChange="this.form.submit()">
+	<% dependencias.forEach(function(d) { -%>
+	<option value="<%= d.DependId %>"<% if (DependId==d.DependId) { %> selected<% } %>><%= d.DependDesc %></option>
+	<% }) -%>
+</select></p>
+</form>
+<% } %>
+
 <form method="post">
 <input type="hidden" name="dependid" value="<%= DependId %>">
 <div class="panel panel-default hidden-print">
@@ -27,7 +37,7 @@
 	    <div class="col-xs-4 center">
 				<ul class="nav nav-pills nav-justified">
 				  <li role="presentation" class="<%= (infoMeses.meses[m].inhabilitado ? "disabled" : infoMeses.mes.id==m ? "active" : infoMeses.meses[m].estado) %>">
-						<a<% if (!infoMeses.meses[m].inhabilitado) { %> href="<% if (sails.config.environment != 'development') { %>/node/presentismo/multas<% } %>?mes=<%= m %>"<% } %>><%= infoMeses.meses[m].nombre %></a>
+						<a<% if (!infoMeses.meses[m].inhabilitado) { %> href="<% if (sails.config.environment != 'development') { %>/node/presentismo/multas<% } %>?mes=<%= m %>&dependid=<%= DependId %>"<% } %>><%= infoMeses.meses[m].nombre %></a>
 					</li>
 				</ul>
 				<p><% if (infoMeses.meses[m].inhabilitado) { %>Aún no está habilitado<% } else { %><%= infoMeses.meses[m].estado %>: <%= infoMeses.fecha_toString(infoMeses.meses[m].fecha) %><% } %></p>

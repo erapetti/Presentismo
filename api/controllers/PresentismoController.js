@@ -24,7 +24,7 @@ module.exports = {
 		wsPortal.getSession(sessionid, function(err,session) {
 			if (sails.config.environment === "development") {
 				err = undefined;
-				session = {Sesionesid:1,Userid:'u19724241',Dependid:1031,Lugarid:1031};
+				session = {Sesionesid:1,Userid:'u19724241',Dependid:2710,Lugarid:2710};
 			}
 			if (err) {
 				return res.forbidden(err);
@@ -32,6 +32,12 @@ module.exports = {
 				//return res.negotiate(err);
 			}
 
+			// los usuarios de recursos humanos pueden cambiar de dependencia
+			var cambio_dependencia = (session.Dependid == 2710);
+			if (session.Dependid == 2710 && req.param('dependid')) {
+				session.Dependid = parseInt(req.param('dependid'));
+				session.Lugarid = session.Dependid;
+			}
 			var mes = parseInt(req.param('mes'));
 
 			var d = new Date();
@@ -65,61 +71,74 @@ module.exports = {
 					infoMeses.meses[info.mes].estado = "Presentado";
 				});
 
-				var cerrar = parseInt(req.param('cerrar'));
-				if (cerrar) {
-					Presentismo.create({anio:anio, mes:cerrar, DependId:session.Dependid, userid:session.Userid}).exec(function(err,data) {
-						var mensaje;
-
-						if (err) {
-							sails.log("error="+err);
-							mensaje = "No se pudo cerrar el mes por un error al acceder a la base de datos";
-							return res.view({title:title,infoMeses:infoMeses, DependId:session.Dependid, presentismo:presentismo,  mensaje:mensaje, certificados:undefined});
-						} else {
-							sails.log("Cierre de mes="+cerrar+" dependid="+session.Dependid);
-							return res.redirect(sails.config.environment==='development' ? '' : '/node/presentismo');
-						}
-					});
-					return;
-				}
-
-				if (!mes) {
-					return res.view({title:title,infoMeses:infoMeses, DependId:session.Dependid, presentismo:presentismo, certificados:undefined});
-				}
-
-				infoMeses.mes.id = mes;
-				infoMeses.mes.nombre = meses[mes];
-
-				// obtengo todas las inasistencias de la dependencia:
-				Inasistencias.get({DependId:session.Dependid,Anio:anio,Mes:mes}, function(err, inasistencias) {
+				Dependencias.conPersonal(function(err, dependencias){
 					if (err) {
 						return res.serverError(err);
 					}
 
-					// transformo las inasistencias en un array
-					var arrInasistencias = Array();
-					inasistencias.forEach(function(info) {
-						if (!arrInasistencias[info.perdocid]) {
-							arrInasistencias[info.perdocid] = Array();
-						}
-						if (typeof arrInasistencias[info.perdocid][info.InasisLicTipo]==='undefined') {
-							arrInasistencias[info.perdocid][info.InasisLicTipo] = 0;
-						}
-						arrInasistencias[info.perdocid][info.InasisLicTipo] += info.inasistencias;
-					});
+					var cerrar = parseInt(req.param('cerrar'));
+					if (cerrar) {
+						Presentismo.create({anio:anio, mes:cerrar, DependId:session.Dependid, userid:session.Userid}).exec(function(err,data) {
+							var mensaje;
 
-					// obtengo los certificados que faltan en la dependencia
-					Certificados.get({DependId:session.Dependid,Anio:anio,Mes:mes}, function(err, certificados) {
+							if (err) {
+								Presentismo.update({anio:anio, mes:cerrar, DependId:session.Dependid, userid:session.Userid},{}).exec(function(err,data) {
+									if (err) {
+										sails.log("error="+err);
+										mensaje = "No se pudo cerrar el mes por un error al acceder a la base de datos";
+										return res.view({title:title,infoMeses:infoMeses, DependId:session.Dependid, presentismo:presentismo,  mensaje:mensaje, certificados:undefined, cambio_dependencia:cambio_dependencia, dependencias:dependencias });
+									} else {
+										sails.log("Cierre por update de anio="+anio+" mes="+cerrar+" dependid="+session.Dependid);
+										return res.redirect((sails.config.environment==='development' ? '' : '/node/presentismo')+(cambio_dependencia ? '?dependid='+session.Dependid : ''));
+									}
+								});
+							} else {
+								sails.log("Cierre de anio="+anio+" mes="+cerrar+" dependid="+session.Dependid);
+								return res.redirect((sails.config.environment==='development' ? '' : '/node/presentismo')+(cambio_dependencia ? '?dependid='+session.Dependid : ''));
+							}
+						});
+						return;
+					}
+
+					if (!mes) {
+						return res.view({title:title,infoMeses:infoMeses, DependId:session.Dependid, presentismo:presentismo, certificados:undefined, cambio_dependencia:cambio_dependencia, dependencias:dependencias });
+					}
+
+					infoMeses.mes.id = mes;
+					infoMeses.mes.nombre = meses[mes];
+
+					// obtengo todas las inasistencias de la dependencia:
+					Inasistencias.get({DependId:session.Dependid,Anio:anio,Mes:mes}, function(err, inasistencias) {
 						if (err) {
 							return res.serverError(err);
 						}
 
-						// obtengo las personas de la dependencia:
-						Personal.get({Anio:anio,Mes:mes,DependId:session.Dependid}, function(err, personalLiceo) {
+						// transformo las inasistencias en un array
+						var arrInasistencias = Array();
+						inasistencias.forEach(function(info) {
+							if (!arrInasistencias[info.perdocid]) {
+								arrInasistencias[info.perdocid] = Array();
+							}
+							if (typeof arrInasistencias[info.perdocid][info.InasisLicTipo]==='undefined') {
+								arrInasistencias[info.perdocid][info.InasisLicTipo] = 0;
+							}
+							arrInasistencias[info.perdocid][info.InasisLicTipo] += info.inasistencias;
+						});
+
+						// obtengo los certificados que faltan en la dependencia
+						Certificados.get({DependId:session.Dependid,Anio:anio,Mes:mes}, function(err, certificados) {
 							if (err) {
 								return res.serverError(err);
 							}
 
-							return res.view({title:title, arrInasistencias:arrInasistencias, personalLiceo:personalLiceo, infoMeses:infoMeses, DependId:session.Dependid, presentismo:presentismo, certificados:certificados});
+							// obtengo las personas de la dependencia:
+							Personal.get({Anio:anio,Mes:mes,DependId:session.Dependid}, function(err, personalLiceo) {
+								if (err) {
+									return res.serverError(err);
+								}
+
+								return res.view({title:title, arrInasistencias:arrInasistencias, personalLiceo:personalLiceo, infoMeses:infoMeses, DependId:session.Dependid, presentismo:presentismo, certificados:certificados, cambio_dependencia:cambio_dependencia, dependencias:dependencias });
+							});
 						});
 					});
 				});
@@ -180,7 +199,9 @@ module.exports = {
 					}
 
 					presentismo.forEach (function(info){
-						infoMeses.meses[info.mes].depend[info.DependId] = [info.updatedAt];
+						if (typeof infoMeses.meses[info.mes] !== 'undefined') {
+							infoMeses.meses[info.mes].depend[info.DependId] = [info.updatedAt];
+						}
 					});
 
 					Multas.find({DependId:arrDepends, anio:anio}).exec(function(err, multas) {
@@ -215,12 +236,18 @@ module.exports = {
 		wsPortal.getSession(sessionid, function(err,session) {
 			if (sails.config.environment === "development") {
 				err = undefined;
-				session = {Sesionesid:1,Userid:'u19724241',Dependid:1072,Lugarid:1072};
+				session = {Sesionesid:1,Userid:'u19724241',Dependid:2710,Lugarid:2710};
 			}
 			if (err) {
 				return res.forbidden(err);
 			}
 
+			// los usuarios de recursos humanos pueden cambiar de dependencia
+			var cambio_dependencia = (session.Dependid == 2710);
+			if (session.Dependid == 2710 && req.param('dependid')) {
+				session.Dependid = parseInt(req.param('dependid'));
+				session.Lugarid = session.Dependid;
+			}
 			var mes = parseInt(req.param('mes'));
 
 			var d = new Date();
@@ -255,8 +282,13 @@ module.exports = {
 					infoMeses.meses[info.mes].estado = "Presentado";
 				});
 
-				var cerrar = parseInt(req.param('cerrar'));
-				if (cerrar) {
+				Dependencias.conPersonal(function(err, dependencias){
+					if (err) {
+						return res.serverError(err);
+					}
+
+					var cerrar = parseInt(req.param('cerrar'));
+					if (cerrar) {
 					Multas.create({anio:anio, mes:cerrar, DependId:session.Dependid, userid:session.Userid}).exec(function(err,data) {
 						var mensaje;
 
@@ -267,75 +299,76 @@ module.exports = {
 								if (err) {
 									sails.log("error="+err);
 									mensaje = "No se pudo cerrar el mes por un error al acceder a la base de datos";
-									return res.view({title:title,infoMeses:infoMeses, DependId:session.Dependid, mensaje:mensaje, certificados:undefined});
+									return res.view({title:title,infoMeses:infoMeses, DependId:session.Dependid, mensaje:mensaje, certificados:undefined, cambio_dependencia:cambio_dependencia, dependencias:dependencias});
 								} else {
 									sails.log("Cierre por update de mes="+cerrar+" dependid="+session.Dependid);
-									return res.redirect(sails.config.environment==='development' ? 'multas' : '/node/presentismo/multas');
+									return res.redirect((sails.config.environment==='development' ? 'multas' : '/node/presentismo/multas')+(cambio_dependencia ? '?dependid='+session.Dependid : ''));
 								}
 							});
 
 						} else {
 							sails.log("Cierre de mes="+cerrar+" dependid="+session.Dependid);
-							return res.redirect(sails.config.environment==='development' ? 'multas' : '/node/presentismo/multas');
+							return res.redirect((sails.config.environment==='development' ? 'multas' : '/node/presentismo/multas')+(cambio_dependencia ? '?dependid='+session.Dependid : ''));
 						}
 					});
 					return;
 				}
 
-				if (!mes) {
-					return res.view({title:title,infoMeses:infoMeses, DependId:session.Dependid, certificados:undefined});
-				}
-
-				infoMeses.mes.id = mes;
-				infoMeses.mes.nombre = meses[mes];
-
-				// obtengo todas las inasistencias de la dependencia:
-				Inasistencias.get_multas({DependId:session.Dependid,Anio:anio,Mes:mes}, function(err, inasistencias) {
-					if (err) {
-						return res.serverError(err);
+					if (!mes) {
+						return res.view({title:title,infoMeses:infoMeses, DependId:session.Dependid, certificados:undefined, cambio_dependencia:cambio_dependencia, dependencias:dependencias});
 					}
 
-					// transformo las inasistencias en un array
-					var arrInasistencias = Array();
-					inasistencias.forEach(function(info) {
-						if (!arrInasistencias[info.perdocid]) {
-							arrInasistencias[info.perdocid] = Array();
-						}
-						if (!arrInasistencias[info.perdocid][info.InasisLicTipo]) {
-							arrInasistencias[info.perdocid][info.InasisLicTipo] = Array();
-						}
-						if (!arrInasistencias[info.perdocid][info.InasisLicTipo][info.InasCausTipo]) {
-							arrInasistencias[info.perdocid][info.InasisLicTipo][info.InasCausTipo] = Array();
-						}
-						if (!arrInasistencias[info.perdocid][info.InasisLicTipo][info.InasCausTipo][info.InasCausId]) {
-							arrInasistencias[info.perdocid][info.InasisLicTipo][info.InasCausTipo][info.InasCausId] = Array();
-						}
-						if (typeof arrInasistencias[info.perdocid][info.InasisLicTipo][info.InasCausTipo][info.InasCausId][info.CicloPago]==='undefined') {
-							arrInasistencias[info.perdocid][info.InasisLicTipo][info.InasCausTipo][info.InasCausId][info.CicloPago] = {horas:0, dias:0};
-						}
-						arrInasistencias[info.perdocid][info.InasisLicTipo][info.InasCausTipo][info.InasCausId][info.CicloPago].horas += info.horas;
-						arrInasistencias[info.perdocid][info.InasisLicTipo][info.InasCausTipo][info.InasCausId][info.CicloPago].dias  += info.dias;
-					});
+					infoMeses.mes.id = mes;
+					infoMeses.mes.nombre = meses[mes];
 
-					// obtengo los certificados que faltan en la dependencia
-					Certificados.get({DependId:session.Dependid,Anio:anio,Mes:mes}, function(err, certificados) {
+					// obtengo todas las inasistencias de la dependencia:
+					Inasistencias.get_multas({DependId:session.Dependid,Anio:anio,Mes:mes}, function(err, inasistencias) {
 						if (err) {
 							return res.serverError(err);
 						}
 
-						// obtengo las personas de la dependencia:
-						Personal.get({Anio:anio,Mes:mes,DependId:session.Dependid,activo:'S'}, function(err, personalLiceo) {
+						// transformo las inasistencias en un array
+						var arrInasistencias = Array();
+						inasistencias.forEach(function(info) {
+							if (!arrInasistencias[info.perdocid]) {
+								arrInasistencias[info.perdocid] = Array();
+							}
+							if (!arrInasistencias[info.perdocid][info.InasisLicTipo]) {
+								arrInasistencias[info.perdocid][info.InasisLicTipo] = Array();
+							}
+							if (!arrInasistencias[info.perdocid][info.InasisLicTipo][info.InasCausTipo]) {
+								arrInasistencias[info.perdocid][info.InasisLicTipo][info.InasCausTipo] = Array();
+							}
+							if (!arrInasistencias[info.perdocid][info.InasisLicTipo][info.InasCausTipo][info.InasCausId]) {
+								arrInasistencias[info.perdocid][info.InasisLicTipo][info.InasCausTipo][info.InasCausId] = Array();
+							}
+							if (typeof arrInasistencias[info.perdocid][info.InasisLicTipo][info.InasCausTipo][info.InasCausId][info.CicloPago]==='undefined') {
+								arrInasistencias[info.perdocid][info.InasisLicTipo][info.InasCausTipo][info.InasCausId][info.CicloPago] = {horas:0, dias:0};
+							}
+							arrInasistencias[info.perdocid][info.InasisLicTipo][info.InasCausTipo][info.InasCausId][info.CicloPago].horas += info.horas;
+							arrInasistencias[info.perdocid][info.InasisLicTipo][info.InasCausTipo][info.InasCausId][info.CicloPago].dias  += info.dias;
+						});
+
+						// obtengo los certificados que faltan en la dependencia
+						Certificados.get({DependId:session.Dependid,Anio:anio,Mes:mes}, function(err, certificados) {
 							if (err) {
 								return res.serverError(err);
 							}
 
-							// averiguo si este liceo trabaja los sábados:
-							Estudiantil.liceo_sabado({DependId:session.Dependid,Anio:anio,Mes:mes},function(err,trabaja_sabado){
+							// obtengo las personas de la dependencia:
+							Personal.get({Anio:anio,Mes:mes,DependId:session.Dependid,activo:'S'}, function(err, personalLiceo) {
 								if (err) {
 									return res.serverError(err);
 								}
 
-								return res.view({title:title,arrInasistencias:arrInasistencias, personalLiceo:personalLiceo, infoMeses:infoMeses, DependId:session.Dependid, certificados:certificados, trabaja_sabado:trabaja_sabado});
+								// averiguo si este liceo trabaja los sábados:
+								Estudiantil.liceo_sabado({DependId:session.Dependid,Anio:anio,Mes:mes},function(err,trabaja_sabado){
+									if (err) {
+										return res.serverError(err);
+									}
+
+									return res.view({title:title,arrInasistencias:arrInasistencias, personalLiceo:personalLiceo, infoMeses:infoMeses, DependId:session.Dependid, certificados:certificados, trabaja_sabado:trabaja_sabado, cambio_dependencia:cambio_dependencia, dependencias:dependencias});
+								});
 							});
 						});
 					});
